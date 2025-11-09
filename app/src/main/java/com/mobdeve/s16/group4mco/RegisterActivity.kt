@@ -6,33 +6,44 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 
 class RegisterActivity : AppCompatActivity() {
+
+    private lateinit var dbHelper: DatabaseHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        val name = findViewById<EditText>(R.id.regName)
-        val email = findViewById<EditText>(R.id.regEmail)
-        val pass = findViewById<EditText>(R.id.regPassword)
-        val btn = findViewById<Button>(R.id.registerBtn)
+        dbHelper = DatabaseHelper(this)
+
+        val nameInput = findViewById<EditText>(R.id.regName)
+        val emailInput = findViewById<EditText>(R.id.regEmail)
+        val passwordInput = findViewById<EditText>(R.id.regPassword)
+        val registerBtn = findViewById<Button>(R.id.registerBtn)
         val toLogin = findViewById<TextView>(R.id.toLogin)
 
-        btn.setOnClickListener {
-            val n = name.text.toString().trim()
-            val e = email.text.toString().trim()
-            val p = pass.text.toString().trim()
+        registerBtn.setOnClickListener {
+            val name = nameInput.text.toString().trim()
+            val email = emailInput.text.toString().trim()
+            val password = passwordInput.text.toString().trim()
 
-            if (n.isEmpty() || e.isEmpty() || p.isEmpty()) {
-                Toast.makeText(this, "Please complete all fields", Toast.LENGTH_SHORT).show()
+            if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            } else if (dbHelper.checkEmailExists(email)) {
+                Toast.makeText(this, "Email already registered!", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this, "Account created! Please sign in.", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, LoginActivity::class.java))
-                finish()
+                val success = dbHelper.insertUser(name, email, password)
+                if (success) {
+                    Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, LoginActivity::class.java))
+                    finish()
+                } else {
+                    Toast.makeText(this, "Registration failed", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
         toLogin.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
-            finish()
         }
     }
 }

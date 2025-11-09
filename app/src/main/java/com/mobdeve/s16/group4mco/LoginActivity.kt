@@ -6,26 +6,32 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 
 class LoginActivity : AppCompatActivity() {
+
+    private lateinit var dbHelper: DatabaseHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val email = findViewById<EditText>(R.id.emailInput)
-        val pass = findViewById<EditText>(R.id.passwordInput)
+        dbHelper = DatabaseHelper(this)
+
+        val emailInput = findViewById<EditText>(R.id.emailInput)
+        val passwordInput = findViewById<EditText>(R.id.passwordInput)
         val loginBtn = findViewById<Button>(R.id.loginBtn)
         val toRegister = findViewById<TextView>(R.id.toRegister)
 
         loginBtn.setOnClickListener {
-            val e = email.text.toString().trim()
-            val p = pass.text.toString().trim()
+            val email = emailInput.text.toString().trim()
+            val password = passwordInput.text.toString().trim()
 
-            if (e.isEmpty() || p.isEmpty()) {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-            } else {
-                // (For now, skip database check — just go to Dashboard)
-                val intent = Intent(this, DashboardActivity::class.java)
-                startActivity(intent)
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show()
+            } else if (dbHelper.checkUser(email, password)) {
+                Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, DashboardActivity::class.java))
                 finish()
+            } else {
+                Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
             }
         }
 
