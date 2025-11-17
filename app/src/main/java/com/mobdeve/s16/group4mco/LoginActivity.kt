@@ -4,25 +4,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.mobdeve.s16.group4mco.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityLoginBinding
     private lateinit var dbHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         dbHelper = DatabaseHelper(this)
 
-        val emailInput = findViewById<EditText>(R.id.emailInput)
-        val passwordInput = findViewById<EditText>(R.id.passwordInput)
-        val loginBtn = findViewById<Button>(R.id.loginBtn)
-        val toRegister = findViewById<TextView>(R.id.toRegister)
-
-        loginBtn.setOnClickListener {
-            val email = emailInput.text.toString().trim()
-            val password = passwordInput.text.toString().trim()
+        binding.loginBtn.setOnClickListener {
+            val email = binding.emailInput.text.toString().trim()
+            val password = binding.passwordInput.text.toString().trim()
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show()
@@ -35,7 +33,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        toRegister.setOnClickListener {
+        binding.toRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
