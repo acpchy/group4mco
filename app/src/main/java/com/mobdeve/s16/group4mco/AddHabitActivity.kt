@@ -1,33 +1,83 @@
 package com.mobdeve.s16.group4mco
 
+import android.app.TimePickerDialog
 import android.os.Bundle
-import android.widget.*
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import com.mobdeve.s16.group4mco.databinding.ActivityAddHabitBinding
+import java.util.*
 
 class AddHabitActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityAddHabitBinding
+    private lateinit var db: HabitDatabaseHelper
+    private var selectedTime = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_habit)
+        binding = ActivityAddHabitBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val habitName = findViewById<EditText>(R.id.habitName)
-        val habitDesc = findViewById<EditText>(R.id.habitDesc)
-        val habitFreq = findViewById<Spinner>(R.id.habitFreq)
-        val saveBtn = findViewById<Button>(R.id.saveHabitBtn)
+        db = HabitDatabaseHelper(this)
 
-        val freqOptions = arrayOf("Daily", "Weekly", "Monthly")
-        habitFreq.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, freqOptions)
+        setupCategorySpinner()
+        setupFrequencySpinner()
+        setupTimePicker()
 
-        saveBtn.setOnClickListener {
-            val name = habitName.text.toString().trim()
-            val desc = habitDesc.text.toString().trim()
-            val freq = habitFreq.selectedItem.toString()
-
-            if (name.isEmpty()) {
-                Toast.makeText(this, "Please enter a habit name", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Habit \"$name\" added!", Toast.LENGTH_SHORT).show()
-                finish() // return to Dashboard
-            }
+        binding.btnSaveHabit.setOnClickListener {
+            saveHabit()
         }
+    }
+
+    private fun setupCategorySpinner() {
+        val categories = listOf("Health", "Study", "Lifestyle")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categories)
+        binding.spinnerCategory.adapter = adapter
+    }
+
+    private fun setupFrequencySpinner() {
+        val freqs = listOf("Daily", "3x/week", "Weekdays", "Weekends")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, freqs)
+        binding.spinnerFrequency.adapter = adapter
+    }
+
+    private fun setupTimePicker() {
+        binding.btnPickTime.setOnClickListener {
+            val cal = Calendar.getInstance()
+            val hour = cal.get(Calendar.HOUR_OF_DAY)
+            val minute = cal.get(Calendar.MINUTE)
+
+            TimePickerDialog(this, { _, h, m ->
+                selectedTime = String.format("%02d:%02d", h, m)
+                binding.tvTimeSelected.text = "Reminder: $selectedTime"
+            }, hour, minute, true).show()
+        }
+    }
+
+    private fun saveHabit() {
+        val name = binding.etHabitName.text.toString().trim()
+        val category = binding.spinnerCategory.selectedItem.toString()
+        val desc = binding.etDescription.text.toString().trim()
+        val freq = binding.spinnerFrequency.selectedItem.toString()
+
+        if (name.isEmpty()) {
+            binding.etHabitName.error = "Required"
+            return
+        }
+        if (selectedTime.isEmpty()) {
+            binding.tvTimeSelected.text = "Please pick a time!"
+            return
+        }
+
+        val habit = Habit(
+            name = name,
+            category = category,
+            description = desc,
+            frequency = freq,
+            reminderTime = selectedTime
+        )
+
+        db.insertHabit(habit)
+        finish()
     }
 }
