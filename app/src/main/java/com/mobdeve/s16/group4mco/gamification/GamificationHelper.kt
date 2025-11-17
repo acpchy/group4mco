@@ -1,18 +1,58 @@
 package com.mobdeve.s16.group4mco.gamification
 
+data class BadgeDefinition(
+    val title: String,
+    val description: String,
+    val unlocked: Boolean
+)
+
 object GamificationHelper {
 
+    fun badgeDefinitions(bestStreak: Int, points: Int, totalCompletions: Int): List<BadgeDefinition> {
+        val definitions = listOf(
+            BadgeDefinition(
+                "First Step",
+                "Log your first habit completion",
+                totalCompletions >= 1
+            ),
+            BadgeDefinition(
+                "Warm-Up",
+                "Hold a 3-day streak",
+                bestStreak >= 3
+            ),
+            BadgeDefinition(
+                "7-Day Streak",
+                "Complete habits for 7 days straight",
+                bestStreak >= 7
+            ),
+            BadgeDefinition(
+                "Monthly Master",
+                "Stay consistent for 30 consecutive days",
+                bestStreak >= 30
+            ),
+            BadgeDefinition(
+                "Points Champion",
+                "Earn 500 motivation points",
+                points >= 500
+            ),
+            BadgeDefinition(
+                "Milestone Maker",
+                "Reach 50 total completions",
+                totalCompletions >= 50
+            )
+        )
+        return definitions
+    }
+
     fun buildBadges(bestStreak: Int, points: Int, totalCompletions: Int): List<String> {
-        val badges = mutableListOf<String>()
+        return badgeDefinitions(bestStreak, points, totalCompletions)
+            .filter { it.unlocked }
+            .map { "${it.title} — ${it.description}" }
+    }
 
-        if (totalCompletions >= 1) badges.add("First Step — Logged your first habit completion")
-        if (bestStreak >= 3) badges.add("Warm-Up — 3-day streak")
-        if (bestStreak >= 7) badges.add("7-Day Streak — One full week of momentum")
-        if (bestStreak >= 30) badges.add("Monthly Master — 30 days of consistency")
-        if (points >= 500) badges.add("Points Champion — 500+ motivation points")
-        if (totalCompletions >= 50) badges.add("Milestone Maker — 50 total completions")
-
-        return badges
+    fun lockedBadges(bestStreak: Int, points: Int, totalCompletions: Int): List<BadgeDefinition> {
+        return badgeDefinitions(bestStreak, points, totalCompletions)
+            .filterNot { it.unlocked }
     }
 
     fun motivationMessage(bestStreak: Int): String {
