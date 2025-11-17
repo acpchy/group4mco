@@ -1,106 +1,113 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="#FFD6A4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F3EFE0">
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/tvGreeting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hi, User Name!"
+        android:textColor="#2B2B2B"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvMotivation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Let's make habits together!"
+        android:textColor="#4B6B67"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="November 16, 2025"
+        android:textColor="#7B7B7B"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnCheckProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#0088FF"
+        android:text="Check Your Progress!"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnAddHabit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="#BCCBA3"
+        android:text="Add Habit"
+        android:textSize="18sp" />
 
     <LinearLayout
+        android:id="@+id/habitContainer"
         android:orientation="vertical"
-        android:padding="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="vertical" />
+
+    <LinearLayout
+        android:id="@+id/bottomNavBar"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
         android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="56dp"
+        android:layout_marginTop="12dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <ImageButton
+            android:id="@+id/navHome"
+            android:src="@drawable/ic_home"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Home"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Today's Habits"
-            android:textColor="#2B2B2B"
-            android:textStyle="bold"
-            android:textSize="22sp"
-            android:layout_marginBottom="16dp" />
+            android:padding="12dp" />
 
-        <!-- Placeholder list -->
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <CheckBox
-                android:text="Drink 8 glasses of water"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <CheckBox
-                android:text="Study 1 hour"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <CheckBox
-                android:text="Exercise"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <ProgressBar
-            android:id="@+id/dailyProgress"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/navProgress"
+            android:src="@drawable/ic_progress"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Progress"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:progress="50"
-            android:layout_marginTop="20dp"
-            android:progressTint="#BCCBA3" />
+            android:padding="12dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <ImageButton
+            android:id="@+id/navAchievements"
+            android:src="@drawable/ic_achievements"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Achievements"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Streak: 3 Days 🔥"
-            android:textColor="#4B6B67"
-            android:textSize="16sp"
-            android:layout_marginTop="12dp"/>
+            android:padding="12dp" />
 
-        <Button
-            android:id="@+id/addHabitBtn"
-            android:text="Add Habit"
-            android:backgroundTint="#BCCBA3"
-            android:textColor="#2B2B2B"
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/navSettings"
+            android:src="@drawable/ic_settings"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Settings"
+            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"/>
+            android:padding="12dp" />
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/progressBtn"
-                android:text="Progress"
-                android:backgroundTint="#AFB2C9"
-                android:textColor="#2B2B2B"
-                android:layout_margin="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <Button
-                android:id="@+id/achievementsBtn"
-                android:text="Achievements"
-                android:backgroundTint="#FFD6A4"
-                android:textColor="#2B2B2B"
-                android:layout_margin="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <Button
-                android:id="@+id/settingsBtn"
-                android:text="Settings"
-                android:backgroundTint="#E6C4C3"
-                android:textColor="#2B2B2B"
-                android:layout_margin="4dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
     </LinearLayout>
-</ScrollView>
+</LinearLayout>
