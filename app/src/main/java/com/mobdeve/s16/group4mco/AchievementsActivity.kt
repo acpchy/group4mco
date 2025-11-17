@@ -1,55 +1,50 @@
 package com.mobdeve.s16.group4mco
 
 import android.os.Bundle
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.google.android.material.card.MaterialCardView
 import com.mobdeve.s16.group4mco.databinding.ActivityAchievementsBinding
+import com.mobdeve.s16.group4mco.gamification.GamificationHelper
 
 class AchievementsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAchievementsBinding
+    private lateinit var habitDb: HabitDatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAchievementsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val sampleAchievements = listOf(
-            "🎯 Started your first habit!",
-            "🔥 3-day streak achieved!",
-            "🌿 Completed 10 tasks total!"
-        )
+        habitDb = HabitDatabaseHelper(this)
 
-        val margin = resources.getDimensionPixelSize(R.dimen.spacing_3)
-        val padding = resources.getDimensionPixelSize(R.dimen.card_padding)
-        val cornerRadius = resources.getDimension(R.dimen.card_corner_radius)
-        val elevation = resources.getDimension(R.dimen.card_elevation)
+        val stats = habitDb.getAllHabits().map { habitDb.getHabitStats(it.id) }
+        val bestStreak = stats.maxOfOrNull { it.streak } ?: 0
+        val totalCompletions = stats.sumOf { it.totalCompletions }
+        val points = habitDb.getTotalCompletionPoints()
 
-        for (ach in sampleAchievements) {
-            val card = MaterialCardView(this).apply {
-                layoutParams = LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    setMargins(0, margin / 2, 0, margin / 2)
+        val badges = GamificationHelper.buildBadges(bestStreak, points, totalCompletions)
+
+        binding.achievementsPoints.text = "$points pts • ${GamificationHelper.motivationMessage(bestStreak)}"
+
+        binding.achievementsList.removeAllViews()
+        if (badges.isEmpty()) {
+            val emptyView = TextView(this).apply {
+                text = "Keep logging habits to unlock your first badge!"
+                setTextColor(ContextCompat.getColor(context, R.color.color_on_surface_secondary))
+            }
+            binding.achievementsList.addView(emptyView)
+        } else {
+            badges.forEach { badge ->
+                val badgeView = TextView(this).apply {
+                    text = badge
+                    textSize = 16f
+                    setPadding(0, 8, 0, 8)
+                    setTextColor(ContextCompat.getColor(context, R.color.color_on_surface))
                 }
-                radius = cornerRadius
-                cardElevation = elevation
-                setContentPadding(padding, padding, padding, padding)
+                binding.achievementsList.addView(badgeView)
             }
-
-            val tv = TextView(this).apply {
-                text = ach
-                textSize = 16f
-                setTextColor(ContextCompat.getColor(context, R.color.color_on_surface))
-            }
-
-            card.addView(tv)
-            binding.achievementsList.addView(card)
         }
     }
 }

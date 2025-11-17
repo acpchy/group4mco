@@ -203,7 +203,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Analytics & trends"
+                        android:text="Analytics &amp; trends"
                         android:textColor="@color/color_on_surface"
                         android:textSize="18sp"
                         android:textStyle="bold" />

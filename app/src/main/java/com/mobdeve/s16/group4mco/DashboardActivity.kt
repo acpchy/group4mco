@@ -140,6 +140,10 @@ class DashboardActivity : AppCompatActivity() {
                 background = null
                 setColorFilter(ContextCompat.getColor(context, R.color.color_primary))
                 contentDescription = "Edit habit"
+                layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                ).apply { setMargins(0, 0, 16, 0) }
                 setOnClickListener { launchEditHabit(habit.id) }
             }
 
@@ -148,6 +152,10 @@ class DashboardActivity : AppCompatActivity() {
                 background = null
                 setColorFilter(ContextCompat.getColor(context, R.color.color_error))
                 contentDescription = "Delete habit"
+                layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
                 setOnClickListener { confirmDeleteHabit(habit) }
             }
 

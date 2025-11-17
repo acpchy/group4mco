@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.mobdeve.s16.group4mco.analytics.CategoryBreakdown
 import com.mobdeve.s16.group4mco.analytics.TrendPoint
 import com.mobdeve.s16.group4mco.databinding.ActivityProgressBinding
+import com.mobdeve.s16.group4mco.gamification.GamificationHelper
 
 class ProgressActivity : AppCompatActivity() {
 
@@ -72,8 +73,18 @@ class ProgressActivity : AppCompatActivity() {
         val points = habitDb.getTotalCompletionPoints()
         binding.pointsValue.text = "$points pts"
 
-        val badges = buildBadges(bestStreak, points, habits.sumOf { habitDb.getHabitStats(it.id).totalCompletions })
+        val totalCompletions = habits.sumOf { habitDb.getHabitStats(it.id).totalCompletions }
+        val badges = GamificationHelper.buildBadges(bestStreak, points, totalCompletions)
         renderBadges(badges)
+        val motivation = GamificationHelper.motivationMessage(bestStreak)
+        if (badges.isNotEmpty()) {
+            binding.badgesContainer.addView(TextView(this).apply {
+                text = motivation
+                setTextColor(ContextCompat.getColor(context, R.color.color_on_surface_secondary))
+                textSize = 14f
+                setPadding(0, 8, 0, 0)
+            })
+        }
     }
 
     private fun renderTrend(points: List<TrendPoint>, totalHabits: Int) {
@@ -173,17 +184,5 @@ class ProgressActivity : AppCompatActivity() {
                 textSize = 16f
             })
         }
-    }
-
-    private fun buildBadges(bestStreak: Int, points: Int, totalCompletions: Int): List<String> {
-        val badges = mutableListOf<String>()
-
-        if (totalCompletions >= 1) badges.add("First Step — Logged your first habit completion")
-        if (bestStreak >= 7) badges.add("7-Day Streak — One full week of momentum")
-        if (bestStreak >= 30) badges.add("Monthly Master — 30 days of consistency")
-        if (points >= 500) badges.add("Points Champion — 500+ motivation points")
-        if (totalCompletions >= 50) badges.add("Milestone Maker — 50 total completions")
-
-        return badges
     }
 }
