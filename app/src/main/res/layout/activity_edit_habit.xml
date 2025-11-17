@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="#FFD6A4">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Edit Habit"
+            android:textColor="#2B2B2B"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etHabitName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Habit Name"
+            android:textSize="20sp" />
+
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/etDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="top"
+            android:hint="Description"
+            android:lines="3"
+            android:textSize="20sp" />
+
+        <Spinner
+            android:id="@+id/spinnerFrequency"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnPickTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Select Reminder Time"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvTimeSelected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="No time selected"
+            android:textColor="#4B6B67"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btnSaveHabit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#BCCBA3"
+            android:text="Save Changes"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btnDeleteHabit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#F44336"
+            android:text="Delete Habit"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+</ScrollView>
