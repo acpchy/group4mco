@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#F3EFE0"
+    android:background="#FFD6A4"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,50 +14,64 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
             android:text="Create Account"
-            android:textSize="22sp"
-            android:textStyle="bold"
             android:textColor="#2B2B2B"
-            android:layout_marginBottom="24dp" />
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/regName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name" />
+            android:hint="Name"
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/regEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:hint="Email"
             android:inputType="textEmailAddress"
-            android:layout_marginTop="12dp" />
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/regPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
             android:hint="Password"
             android:inputType="textPassword"
-            android:layout_marginTop="12dp" />
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/regConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/registerBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign Up"
+            android:layout_marginTop="20dp"
             android:backgroundTint="#BCCBA3"
+            android:text="Sign Up"
             android:textColor="#2B2B2B"
-            android:layout_marginTop="20dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/toLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="Already have an account? Sign In"
             android:textColor="#4B6B67"
-            android:layout_marginTop="16dp" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 </ScrollView>
