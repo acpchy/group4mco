@@ -25,11 +25,17 @@
             </intent-filter>
         </activity>
 
-
+        <!-- AUTH -->
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".DashboardActivity" />
 
+        <!-- CORE APP SCREENS -->
+        <activity android:name=".DashboardActivity" />
+        <activity android:name=".AddHabitActivity" />
+        <activity android:name=".ProgressActivity" />
+        <activity android:name=".AchievementsActivity" />
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".EditHabitActivity"/>
     </application>
 
 </manifest>
