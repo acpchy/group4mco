@@ -7,5 +7,39 @@
         <item name="android:tint">@color/color_on_surface_secondary</item>
     </style>
 
-</resources>
+    <!-- Typography Styles -->
+    <style name="TextAppearance.Consistify" parent="@android:style/TextAppearance">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/color_on_surface</item>
+    </style>
 
+    <style name="TextAppearance.Consistify.Headline">
+        <item name="android:fontFamily">@string/font_family_heading</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:textColor">@color/color_on_surface</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.02</item>
+    </style>
+
+    <style name="TextAppearance.Consistify.Body">
+        <item name="android:fontFamily">@string/font_family_body</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/color_on_surface</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+
+    <style name="TextAppearance.Consistify.BodySecondary">
+        <item name="android:fontFamily">@string/font_family_body</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/color_on_surface_secondary</item>
+    </style>
+
+    <style name="TextAppearance.Consistify.Button">
+        <item name="android:fontFamily">@string/font_family_body</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/color_on_surface</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>

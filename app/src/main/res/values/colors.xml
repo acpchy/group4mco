@@ -1,20 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_primary">#6A5AE0</color>
-    <color name="color_primary_dark">#4E3FE0</color>
+    <!-- Brand Colors - Warm Apricot/Cream Palette -->
+    <color name="color_primary">#4CAF50</color>
+    <color name="color_primary_dark">#388E3C</color>
     <color name="color_secondary">#FF8E72</color>
-    <color name="color_accent">#FEC260</color>
-    <color name="color_background">#F5F6FF</color>
+    <color name="color_accent">#FFB74D</color>
+    
+    <!-- Background Colors -->
+    <color name="color_background">#FFF8F0</color>
     <color name="color_surface">#FFFFFF</color>
-    <color name="color_surface_alt">#F0F4FF</color>
+    <color name="color_surface_alt">#F5F5F5</color>
+    
+    <!-- Text Colors -->
     <color name="color_on_primary">#FFFFFF</color>
-    <color name="color_on_surface">#111827</color>
+    <color name="color_on_surface">#2C2C2C</color>
     <color name="color_on_surface_secondary">#6B7280</color>
-    <color name="color_success">#55D6C2</color>
-    <color name="color_warning">#FACC15</color>
+    
+    <!-- Status Colors -->
+    <color name="color_success">#4CAF50</color>
+    <color name="color_warning">#FFB74D</color>
     <color name="color_error">#F87171</color>
-    <color name="color_card_stroke">#1A5AE0</color>
-    <color name="gradient_start">#F7F4FF</color>
-    <color name="gradient_center">#F0F7FF</color>
-    <color name="gradient_end">#E6FCF4</color>
+    
+    <!-- Gradient Colors - Warm Apricot to Cream -->
+    <color name="gradient_start">#FFE5D4</color>
+    <color name="gradient_center">#FFF4E6</color>
+    <color name="gradient_end">#FFF8F0</color>
+    
+    <!-- Onboarding Specific -->
+    <color name="onboarding_orange">#FFB74D</color>
+    <color name="onboarding_cream">#FFF8F0</color>
+    <color name="onboarding_dark_gray">#2C2C2C</color>
+    <color name="onboarding_light_green">#81C784</color>
+    
+    <!-- Habit Chip Colors -->
+    <color name="habit_water">#64B5F6</color>
+    <color name="habit_run">#BA68C8</color>
+    <color name="habit_read">#FFB74D</color>
+    <color name="habit_meditate">#FF8A65</color>
+    <color name="habit_study">#4DB6AC</color>
+    <color name="habit_journal">#E57373</color>
 </resources>

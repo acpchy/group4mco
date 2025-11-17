@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.chip.Chip
 import com.mobdeve.s16.group4mco.databinding.ActivityRegisterBinding
 
 class RegisterActivity : AppCompatActivity() {
@@ -40,9 +41,17 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             val success = dbHelper.insertUser(name, email, password)
+            val selectedHabits = binding.chipGroupHabits.checkedChipIds.mapNotNull { id ->
+                binding.chipGroupHabits.findViewById<Chip>(id)?.text?.toString()
+            }
 
             if (success) {
-                Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
+                val message = if (selectedHabits.isNotEmpty()) {
+                    "Account created! First habits: ${selectedHabits.joinToString()}"
+                } else {
+                    "Account created successfully!"
+                }
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
             } else {

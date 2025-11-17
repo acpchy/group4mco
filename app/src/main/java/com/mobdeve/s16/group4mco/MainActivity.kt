@@ -16,9 +16,17 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.btnGetStarted.setOnClickListener {
+            navigateToOnboarding()
+        }
+
         Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
-        }, 2000) // 2-second splash delay
+            navigateToOnboarding()
+        }, 2000)
+    }
+
+    private fun navigateToOnboarding() {
+        startActivity(Intent(this, OnboardingActivity::class.java))
+        finish()
     }
 }

@@ -25,6 +25,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".OnboardingActivity" />
+
         <!-- AUTH -->
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />

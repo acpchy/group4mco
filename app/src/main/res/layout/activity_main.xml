@@ -3,65 +3,65 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_app_gradient">
+    android:background="@drawable/bg_app_gradient"
+    android:padding="32dp">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/splashCard"
+    <LinearLayout
+        android:id="@+id/brandContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/logoMark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✓"
+            android:textColor="@color/color_on_surface"
+            android:textSize="48sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/logoText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Consistify"
+            android:textAppearance="@style/TextAppearance.Consistify.Headline"
+            android:textColor="@color/color_on_surface"
+            android:textSize="42sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tagline"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:layout_marginVertical="48dp"
-        android:padding="32dp"
-        app:cardCornerRadius="@dimen/card_corner_radius"
-        app:cardElevation="@dimen/card_elevation"
-        app:strokeColor="@color/color_card_stroke"
-        app:strokeWidth="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"
+        android:text="Create good habits.\nTrack better days."
+        android:textColor="@color/color_on_surface_secondary"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@+id/brandContainer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/consistify_icon" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Consistify"
-                android:textColor="@color/color_on_surface"
-                android:textSize="36sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:alpha="0.8"
-                android:text="Build intentional routines"
-                android:textColor="@color/color_on_surface_secondary"
-                android:textSize="16sp" />
-
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                style="@style/Widget.MaterialComponents.CircularProgressIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                app:indicatorSize="48dp"
-                app:indicatorInset="0dp"
-                app:indicatorColor="@color/color_primary" />
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnGetStarted"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@color/color_surface"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text=""
+        android:contentDescription="Continue"
+        app:cornerRadius="32dp"
+        app:icon="@drawable/ic_progress"
+        app:iconGravity="textStart"
+        app:iconTint="@color/color_primary"
+        app:layout_constraintTop_toBottomOf="@id/tagline"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
