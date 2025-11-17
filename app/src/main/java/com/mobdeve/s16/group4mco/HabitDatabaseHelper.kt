@@ -4,6 +4,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.mobdeve.s16.group4mco.analytics.CategoryBreakdown
+import com.mobdeve.s16.group4mco.analytics.TrendPoint
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -259,6 +261,147 @@ class HabitDatabaseHelper(context: Context) :
             longestStreak = longestStreak,
             lastCompleted = lastCompleted
         )
+    }
+
+    fun calculateRangeStreak(rangeDays: Int): Int {
+        val db = readableDatabase
+        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        val startCalendar = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, -(rangeDays - 1))
+        }
+        val startDate = formatter.format(startCalendar.time)
+
+        val cursor = db.rawQuery(
+            """
+                SELECT DISTINCT $COL_DATE 
+                FROM $TABLE_LOGS
+                WHERE $COL_DATE >= ?
+                ORDER BY $COL_DATE DESC
+            """.trimIndent(),
+            arrayOf(startDate)
+        )
+
+        var streak = 0
+        var expectedDate = formatter.format(calendar.time)
+
+        if (cursor.moveToFirst()) {
+            do {
+                val loggedDate = cursor.getString(0)
+                if (loggedDate == expectedDate) {
+                    streak++
+                    calendar.add(Calendar.DAY_OF_YEAR, -1)
+                    expectedDate = formatter.format(calendar.time)
+                } else {
+                    val expected = formatter.parse(expectedDate)
+                    val logged = formatter.parse(loggedDate)
+                    if (expected != null && logged != null) {
+                        val diff = daysBetween(expected, logged)
+                        if (diff > 0) break
+                    }
+                }
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        db.close()
+        return streak
+    }
+
+    private fun daysBetween(later: Date, earlier: Date): Int {
+        val diff = later.time - earlier.time
+        return (diff / (1000 * 60 * 60 * 24)).toInt()
+    }
+
+    fun getCompletionTrend(daysBack: Int = 7): List<TrendPoint> {
+        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val labelFormatter = SimpleDateFormat("EEE", Locale.getDefault())
+        val calendar = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, -(daysBack - 1))
+        }
+
+        val startDate = formatter.format(calendar.time)
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            """
+                SELECT $COL_DATE, COUNT(DISTINCT $COL_HABIT_ID) as total
+                FROM $TABLE_LOGS
+                WHERE $COL_DATE >= ?
+                GROUP BY $COL_DATE
+                ORDER BY $COL_DATE ASC
+            """.trimIndent(),
+            arrayOf(startDate)
+        )
+
+        val map = mutableMapOf<String, Int>()
+        if (cursor.moveToFirst()) {
+            do {
+                map[cursor.getString(0)] = cursor.getInt(1)
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        db.close()
+
+        val points = mutableListOf<TrendPoint>()
+        val rollingCalendar = Calendar.getInstance().apply {
+            time = formatter.parse(startDate)!!
+        }
+        repeat(daysBack) {
+            val dateKey = formatter.format(rollingCalendar.time)
+            val value = map[dateKey] ?: 0
+            points.add(
+                TrendPoint(
+                    label = labelFormatter.format(rollingCalendar.time),
+                    value = value
+                )
+            )
+            rollingCalendar.add(Calendar.DAY_OF_YEAR, 1)
+        }
+
+        return points
+    }
+
+    fun getCategoryBreakdown(): List<CategoryBreakdown> {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            """
+                SELECT h.$COL_CATEGORY, COUNT(l.$COL_LOG_ID) 
+                FROM $TABLE_HABITS h
+                LEFT JOIN $TABLE_LOGS l ON h.$COL_ID = l.$COL_HABIT_ID
+                GROUP BY h.$COL_CATEGORY
+            """.trimIndent(),
+            emptyArray()
+        )
+
+        val breakdown = mutableListOf<CategoryBreakdown>()
+        if (cursor.moveToFirst()) {
+            do {
+                breakdown.add(
+                    CategoryBreakdown(
+                        category = cursor.getString(0) ?: "Uncategorized",
+                        completions = cursor.getInt(1)
+                    )
+                )
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        db.close()
+        return breakdown
+    }
+
+    fun getTotalCompletionPoints(): Int {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT COUNT(*) FROM $TABLE_LOGS",
+            null
+        )
+        cursor.moveToFirst()
+        val points = cursor.getInt(0) * 10
+        cursor.close()
+        db.close()
+        return points
     }
 
     fun updateHabit(habit: Habit): Int {
