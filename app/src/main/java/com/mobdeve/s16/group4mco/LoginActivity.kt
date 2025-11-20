@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.mobdeve.s16.group4mco.databinding.ActivityLoginBinding
+import androidx.core.content.edit
 
 class LoginActivity : AppCompatActivity() {
 
@@ -16,6 +17,7 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val userPrefs = getSharedPreferences("UserSettings", MODE_PRIVATE)
         dbHelper = DatabaseHelper(this)
 
         binding.loginBtn.setOnClickListener {
@@ -25,6 +27,10 @@ class LoginActivity : AppCompatActivity() {
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show()
             } else if (dbHelper.checkUser(email, password)) {
+                userPrefs.edit {
+                    putString("LOGGED_IN_EMAIL", email)
+                    putBoolean("IS_LOGGED_IN", true)
+                }
                 Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, DashboardActivity::class.java))
                 finish()

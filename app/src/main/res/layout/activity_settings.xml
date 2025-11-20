@@ -67,6 +67,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:hint="Surname"
+                    app:boxBackgroundMode="filled"
+                    app:boxStrokeColor="@color/color_primary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/settingSurname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:hint="Email"
                     app:boxBackgroundMode="filled"
                     app:boxStrokeColor="@color/color_primary">
@@ -89,16 +105,6 @@
                     android:textAllCaps="false"
                     app:cornerRadius="22dp" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/logoutBtn"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="Logout"
-                    android:textAllCaps="false"
-                    android:textColor="@color/color_secondary" />
-
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
@@ -120,7 +126,7 @@
                 <TextView
                     android:id="@+id/textView8"
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="App Settings"
                     android:textStyle="bold" />
@@ -128,9 +134,16 @@
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/switch3"
                     android:layout_width="match_parent"
-                    android:layout_height="27dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Notifications" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:text="You need to give this app permission to send in notifications for this feature to work" />
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
@@ -171,6 +184,40 @@
                     android:textAppearance="@style/TextAppearance.Consistify.Body" />
             </LinearLayout>
 
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="@color/color_surface"
+            app:cardCornerRadius="@dimen/card_corner_radius"
+            app:cardElevation="@dimen/card_elevation">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/card_padding">
+
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Session"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/logoutBtn"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Logout"
+                    android:textAllCaps="false"
+                    android:textColor="@color/color_secondary" />
+
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
 

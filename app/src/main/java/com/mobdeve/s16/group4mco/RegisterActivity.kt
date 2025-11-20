@@ -21,11 +21,12 @@ class RegisterActivity : AppCompatActivity() {
 
         binding.registerBtn.setOnClickListener {
             val name = binding.regName.text.toString().trim()
+            val surname = binding.regSurname.text.toString().trim()
             val email = binding.regEmail.text.toString().trim()
             val password = binding.regPassword.text.toString().trim()
             val confirmPassword = binding.regConfirmPassword.text.toString().trim()
 
-            if (name.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+            if (name.isEmpty() || surname.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -40,7 +41,7 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val success = dbHelper.insertUser(name, email, password)
+            val success = dbHelper.insertUser(name, surname, email, password)
             val selectedHabits = binding.chipGroupHabits.checkedChipIds.mapNotNull { id ->
                 binding.chipGroupHabits.findViewById<Chip>(id)?.text?.toString()
             }
