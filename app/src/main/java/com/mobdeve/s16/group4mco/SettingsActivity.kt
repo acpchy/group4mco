@@ -14,6 +14,8 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.appName.text = getString(R.string.app_name)
+        binding.appVersionNumber.text = "Version ${getString(R.string.app_version)}"
 
         binding.saveSettingsBtn.setOnClickListener {
             val name = binding.settingsName.text.toString().trim()
