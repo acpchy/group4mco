@@ -6,19 +6,36 @@
     android:background="@drawable/bg_app_gradient"
     android:padding="32dp">
 
+    <TextView
+        android:id="@+id/tagline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Create good habits.\nTrack better days."
+        android:textAlignment="center"
+        android:textColor="@color/color_on_surface_secondary"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/brandContainer" />
+
     <LinearLayout
         android:id="@+id/brandContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="172dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/logoMark"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="✓"
+            android:textAlignment="center"
             android:textColor="@color/color_on_surface"
             android:textSize="48sp"
             android:textStyle="bold" />
@@ -34,34 +51,25 @@
             android:textSize="42sp" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tagline"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Create good habits.\nTrack better days."
-        android:textColor="@color/color_on_surface_secondary"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@+id/brandContainer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnGetStarted"
         style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="12dp"
         android:backgroundTint="@color/color_surface"
+        android:contentDescription="Continue"
         android:insetTop="0dp"
         android:insetBottom="0dp"
         android:text=""
-        android:contentDescription="Continue"
+        android:textAlignment="center"
         app:cornerRadius="32dp"
         app:icon="@drawable/ic_progress"
         app:iconGravity="textStart"
+        app:iconPadding="0dp"
         app:iconTint="@color/color_primary"
-        app:layout_constraintTop_toBottomOf="@id/tagline"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tagline" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

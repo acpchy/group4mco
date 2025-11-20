@@ -27,9 +27,9 @@ class OnboardingActivity : AppCompatActivity() {
             showForm = false
         ),
         OnboardingPage(
-            title = "Continue with E-mail",
-            subtitle = "Enter your credentials to continue.",
-            showForm = true
+            title = "\nWelcome to Consistify",
+            subtitle = "Let's get started. You will be asked to enter your credentials before proceeding.",
+            showForm = false
         )
     )
 
@@ -60,9 +60,9 @@ class OnboardingActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 binding.primaryCta.text = if (position == pages.lastIndex) {
-                    "Get Started"
+                    "Let's Get Started!"
                 } else {
-                    "Continue"
+                    "Next >"
                 }
             }
         })

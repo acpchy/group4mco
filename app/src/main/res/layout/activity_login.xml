@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Continue with E-mail"
+            android:text="Login"
             android:textAppearance="@style/TextAppearance.Consistify.Headline"
             android:textColor="@color/color_on_surface"
             android:textSize="30sp" />
@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Enter your password to keep going."
+            android:text="Enter your credentials to proceed."
             android:textAppearance="@style/TextAppearance.Consistify.BodySecondary"
             android:textColor="@color/color_on_surface_secondary"
             android:textSize="15sp" />
