@@ -1,10 +1,14 @@
 package com.mobdeve.s16.group4mco
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Handler
 import android.os.Looper
+import androidx.core.app.ActivityCompat
 import androidx.core.content.edit
 import com.mobdeve.s16.group4mco.databinding.ActivityMainBinding
 
@@ -16,6 +20,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    101
+                )
+            }
+        }
 
         binding.btnGetStarted.setOnClickListener {
             navigateToOnboarding()
