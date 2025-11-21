@@ -32,11 +32,10 @@ class DashboardActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         habitDb = HabitDatabaseHelper(this)
-
-        binding.tvGreeting.text = "Hi, <insert the first name from the DB>!"
-        binding.tvMotivation.text = "Let's make habits together!"
-
         val userPrefs = getSharedPreferences("UserSettings", MODE_PRIVATE)
+
+        binding.tvGreeting.text = "Hi, ${userPrefs.getString("LOGGED_IN_USER_FIRSTNAME", null)}!"
+        binding.tvMotivation.text = "Let's make habits together!"
 
         // Android 13 now requires the user to grant the app permission to send notifications
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

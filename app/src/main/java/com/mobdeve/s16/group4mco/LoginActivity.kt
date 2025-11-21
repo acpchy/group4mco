@@ -29,6 +29,8 @@ class LoginActivity : AppCompatActivity() {
             } else if (dbHelper.checkUser(email, password)) {
                 userPrefs.edit {
                     putString("LOGGED_IN_EMAIL", email)
+                    putString("LOGGED_IN_USER_FIRSTNAME", dbHelper.getName(email))
+                    putString("LOGGED_IN_USER_SURNAME", dbHelper.getSurname(email))
                     putBoolean("IS_LOGGED_IN", true)
                 }
                 Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show()

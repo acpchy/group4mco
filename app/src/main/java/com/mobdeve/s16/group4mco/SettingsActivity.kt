@@ -24,14 +24,8 @@ class SettingsActivity : AppCompatActivity() {
 
         val userPrefs = getSharedPreferences("UserSettings", MODE_PRIVATE)
         binding.settingsEmail.setText(userPrefs.getString("LOGGED_IN_EMAIL", null))
-        binding.settingsName.setText(dbHelper.getName(userPrefs.getString("LOGGED_IN_EMAIL", null)))
-        binding.settingSurname.setText(
-            dbHelper.getSurname(
-                userPrefs.getString(
-                    "LOGGED_IN_EMAIL",
-                    null
-                )
-            )
+        binding.settingsName.setText(userPrefs.getString("LOGGED_IN_USER_FIRSTNAME", null))
+        binding.settingSurname.setText(userPrefs.getString("LOGGED_IN_USER_SURNAME", null)
         )
         binding.appNotificationSwitch.isChecked = userPrefs.getBoolean(
             "SEND_NOTIFICATIONS",
@@ -41,16 +35,21 @@ class SettingsActivity : AppCompatActivity() {
         binding.appVersionNumber.text = "Version ${getString(R.string.app_version)}"
 
         binding.saveSettingsBtn.setOnClickListener {
-            val name = binding.settingsName.text.toString().trim()
-            val email = binding.settingsEmail.text.toString().trim()
+            val newFirstName = binding.settingsName.text.toString().trim()
+            val newSurname = binding.settingSurname.text.toString().trim()
+            val newEmail = binding.settingsEmail.text.toString().trim()
 
-            if (name.isEmpty() || email.isEmpty()) {
+            val currentEmail = userPrefs.getString("LOGGED_IN_EMAIL", null) ?: ""
+
+            if (newFirstName.isEmpty() || newEmail.isEmpty()) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             } else {
-                dbHelper.updateUser(name, email)
                 userPrefs.edit {
-                    putString("LOGGED_IN_EMAIL", email)
+                    putString("LOGGED_IN_EMAIL", newEmail)
+                    putString("LOGGED_IN_USER_FIRSTNAME", newFirstName)
+                    putString("LOGGED_IN_USER_SURNAME", newSurname)
                 }
+                dbHelper.updateUser(currentEmail, newFirstName, newSurname, newEmail)
                 Toast.makeText(this, "Settings saved", Toast.LENGTH_SHORT).show()
             }
         }

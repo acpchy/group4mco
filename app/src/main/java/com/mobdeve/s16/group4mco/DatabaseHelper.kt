@@ -38,21 +38,25 @@ class DatabaseHelper(context: Context) :
 
     fun insertUser(name: String, surname: String, email: String, password: String): Boolean {
         val db = this.writableDatabase
-        val values = ContentValues()
-        values.put(COLUMN_NAME, name)
-        values.put(COLUMN_SURNAME, surname)
-        values.put(COLUMN_EMAIL, email)
-        values.put(COLUMN_PASSWORD, password)
+        val values = ContentValues().apply {
+            put(COLUMN_NAME, name)
+            put(COLUMN_SURNAME, surname)
+            put(COLUMN_EMAIL, email)
+            put(COLUMN_PASSWORD, password)
+        }
 
         val result = db.insert(TABLE_USERS, null, values)
         db.close()
         return result != -1L
     }
 
-    fun updateUser(email: String, newName: String): Boolean {
+    fun updateUser(email: String, newName: String, newSurname: String, newEmail: String): Boolean {
         val db = this.writableDatabase
-        val values = ContentValues()
-        values.put(COLUMN_NAME, newName)
+        val values = ContentValues().apply {
+            put(COLUMN_NAME, newName)
+            put(COLUMN_SURNAME, newSurname)
+            put(COLUMN_EMAIL, newEmail)
+        }
 
         val result = db.update(TABLE_USERS, values, "$COLUMN_EMAIL = ?",
             arrayOf(email))
