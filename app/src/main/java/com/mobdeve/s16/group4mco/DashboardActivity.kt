@@ -1,6 +1,9 @@
 package com.mobdeve.s16.group4mco
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.CheckBox
@@ -9,7 +12,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import com.google.android.material.card.MaterialCardView
 import com.mobdeve.s16.group4mco.databinding.ActivityDashboardBinding
 import java.text.SimpleDateFormat
@@ -28,8 +33,27 @@ class DashboardActivity : AppCompatActivity() {
 
         habitDb = HabitDatabaseHelper(this)
 
-        binding.tvGreeting.text = "Hi, User!"
+        binding.tvGreeting.text = "Hi, <insert the first name from the DB>!"
         binding.tvMotivation.text = "Let's make habits together!"
+
+        val userPrefs = getSharedPreferences("UserSettings", MODE_PRIVATE)
+
+        // Android 13 now requires the user to grant the app permission to send notifications
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    101
+                )
+            } else {
+                userPrefs.edit { putBoolean("SEND_NOTIFICATIONS", true) }
+            }
+        } else {
+            userPrefs.edit { putBoolean("SEND_NOTIFICATIONS", true) }
+        }
 
         binding.tvDate.text = todayDate()
 
@@ -58,6 +82,23 @@ class DashboardActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         loadHabits()
+    }
+
+    // Set the "SEND_NOTIFICATIONS" SharedPreferences to true when the user presses "Allow"
+    // when their Android device (at least running Android 13) informs that the app needs to
+    // permission to send notifications
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 101) {
+            val userPrefs = getSharedPreferences("UserSettings", MODE_PRIVATE)
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                userPrefs.edit { putBoolean("SEND_NOTIFICATIONS", true) }
+            }
+        }
     }
 
     private fun loadHabits() {

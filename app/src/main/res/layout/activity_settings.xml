@@ -132,7 +132,7 @@
                     android:textStyle="bold" />
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switch3"
+                    android:id="@+id/appNotificationSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
