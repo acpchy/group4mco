@@ -37,7 +37,7 @@ class LoginActivity : AppCompatActivity() {
                 startActivity(Intent(this, DashboardActivity::class.java))
                 finish()
             } else {
-                Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "The supplied credentials are incorrect.", Toast.LENGTH_SHORT).show()
             }
         }
 

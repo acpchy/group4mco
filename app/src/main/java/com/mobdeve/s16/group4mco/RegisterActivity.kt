@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import com.google.android.material.chip.Chip
 import com.mobdeve.s16.group4mco.databinding.ActivityRegisterBinding
 
@@ -17,6 +18,7 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val userPrefs = getSharedPreferences("UserSettings", MODE_PRIVATE)
         dbHelper = DatabaseHelper(this)
 
         binding.registerBtn.setOnClickListener {
@@ -47,13 +49,19 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             if (success) {
+                userPrefs.edit {
+                    putString("LOGGED_IN_EMAIL", email)
+                    putString("LOGGED_IN_USER_FIRSTNAME", dbHelper.getName(email))
+                    putString("LOGGED_IN_USER_SURNAME", dbHelper.getSurname(email))
+                    putBoolean("IS_LOGGED_IN", true)
+                }
                 val message = if (selectedHabits.isNotEmpty()) {
-                    "Account created! First habits: ${selectedHabits.joinToString()}"
+                    "Welcome! ${userPrefs.getString("LOGGED_IN_USER_FIRSTNAME", null)}. Your First habits is/are: ${selectedHabits.joinToString()}"
                 } else {
-                    "Account created successfully!"
+                    "Welcome! ${userPrefs.getString("LOGGED_IN_USER_FIRSTNAME", null)}"
                 }
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, LoginActivity::class.java))
+                startActivity(Intent(this, DashboardActivity::class.java))
                 finish()
             } else {
                 Toast.makeText(this, "Registration failed", Toast.LENGTH_SHORT).show()
