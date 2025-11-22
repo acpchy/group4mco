@@ -22,18 +22,66 @@ class DatabaseHelper(context: Context) :
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        val createTable = ("CREATE TABLE $TABLE_USERS ("
-                + "$COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "$COLUMN_NAME TEXT, "
-                + "$COLUMN_SURNAME TEXT, "
-                + "$COLUMN_EMAIL TEXT UNIQUE, "
-                + "$COLUMN_PASSWORD TEXT)")
+        val createTable = """
+            CREATE TABLE $TABLE_USERS (
+                $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COLUMN_NAME TEXT,
+                $COLUMN_SURNAME TEXT,
+                $COLUMN_EMAIL TEXT UNIQUE,
+                $COLUMN_PASSWORD TEXT
+            )
+        """.trimIndent()
+
         db.execSQL(createTable)
+
+        // Automatically insert dummy users when DB is created
+        insertDummyOnFirstLaunch(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS $TABLE_USERS")
         onCreate(db)
+    }
+
+    private fun insertDummyOnFirstLaunch(db: SQLiteDatabase) {
+        val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_USERS", null)
+        cursor.moveToFirst()
+        val count = cursor.getInt(0)
+        cursor.close()
+
+        insertDummyUsers(db)
+    }
+
+    private fun insertDummyUsers(db: SQLiteDatabase) {
+        val dummyUsers = listOf(
+            Triple("John", "Doe", "john.doe@gmail.com"),
+            Triple("Sarah", "Cruz", "sarah.cruz@gmail.com"),
+            Triple("Marr", "Salcedo", "marr_salcedo@dlsu.edu.ph"),
+            Triple("Angelica", "Simpao", "angelica_simpao@dlsu.edu.ph"),
+            Triple("Pallavi", "Sowl", "pallavi.sowl@gmail.com")
+        )
+
+        for (user in dummyUsers) {
+
+            // Prevent duplicate emails
+            val cursor = db.rawQuery(
+                "SELECT COUNT(*) FROM $TABLE_USERS WHERE $COLUMN_EMAIL = ?",
+                arrayOf(user.third)
+            )
+            cursor.moveToFirst()
+            val exists = cursor.getInt(0) > 0
+            cursor.close()
+
+            if (!exists) {
+                val values = ContentValues().apply {
+                    put(COLUMN_NAME, user.first)
+                    put(COLUMN_SURNAME, user.second)
+                    put(COLUMN_EMAIL, user.third)
+                    put(COLUMN_PASSWORD, "password123")
+                }
+                db.insert(TABLE_USERS, null, values)
+            }
+        }
     }
 
     fun insertUser(name: String, surname: String, email: String, password: String): Boolean {
@@ -58,18 +106,18 @@ class DatabaseHelper(context: Context) :
             put(COLUMN_EMAIL, newEmail)
         }
 
-        val result = db.update(TABLE_USERS, values, "$COLUMN_EMAIL = ?",
-            arrayOf(email))
+        val result = db.update(TABLE_USERS, values, "$COLUMN_EMAIL = ?", arrayOf(email))
         db.close()
         return result > 0
     }
 
     fun checkUser(email: String, password: String): Boolean {
         val db = this.readableDatabase
-        val cursor: Cursor = db.rawQuery(
+        val cursor = db.rawQuery(
             "SELECT * FROM $TABLE_USERS WHERE $COLUMN_EMAIL=? AND $COLUMN_PASSWORD=?",
             arrayOf(email, password)
         )
+
         val exists = cursor.count > 0
         cursor.close()
         db.close()
@@ -78,10 +126,11 @@ class DatabaseHelper(context: Context) :
 
     fun checkEmailExists(email: String): Boolean {
         val db = this.readableDatabase
-        val cursor: Cursor = db.rawQuery(
+        val cursor = db.rawQuery(
             "SELECT * FROM $TABLE_USERS WHERE $COLUMN_EMAIL=?",
             arrayOf(email)
         )
+
         val exists = cursor.count > 0
         cursor.close()
         db.close()
@@ -90,31 +139,33 @@ class DatabaseHelper(context: Context) :
 
     fun getName(currentSessionEmail: String?): String? {
         val db = this.readableDatabase
-        val cursor: Cursor = db.rawQuery(
+        val cursor = db.rawQuery(
             "SELECT $COLUMN_NAME FROM $TABLE_USERS WHERE $COLUMN_EMAIL=?",
             arrayOf(currentSessionEmail)
         )
-        if (cursor.moveToFirst()) {
-            val nameIndex = cursor.getColumnIndexOrThrow(COLUMN_NAME)
-            return cursor.getString(nameIndex)
-        }
+
+        val name = if (cursor.moveToFirst()) {
+            cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME))
+        } else null
+
         cursor.close()
         db.close()
-        return null
+        return name
     }
 
     fun getSurname(currentSessionEmail: String?): String? {
         val db = this.readableDatabase
-        val cursor: Cursor = db.rawQuery(
+        val cursor = db.rawQuery(
             "SELECT $COLUMN_SURNAME FROM $TABLE_USERS WHERE $COLUMN_EMAIL=?",
             arrayOf(currentSessionEmail)
         )
-        if (cursor.moveToFirst()) {
-            val nameIndex = cursor.getColumnIndexOrThrow(COLUMN_SURNAME)
-            return cursor.getString(nameIndex)
-        }
+
+        val surname = if (cursor.moveToFirst()) {
+            cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SURNAME))
+        } else null
+
         cursor.close()
         db.close()
-        return null
+        return surname
     }
 }
