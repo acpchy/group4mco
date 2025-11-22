@@ -478,4 +478,24 @@ class HabitDatabaseHelper(context: Context) :
 
         return db.delete(TABLE_HABITS, "$COL_ID = ?", arrayOf(habitId.toString()))
     }
+
+    fun getHabitById(habitId: Int): Habit? {
+        val db = readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_HABITS WHERE $COL_ID = ?", arrayOf(habitId.toString()))
+
+        var habit: Habit? = null
+        if (cursor.moveToFirst()) {
+            habit = Habit(
+                id = cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
+                name = cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
+                category = cursor.getString(cursor.getColumnIndexOrThrow(COL_CATEGORY)),
+                description = cursor.getString(cursor.getColumnIndexOrThrow(COL_DESCRIPTION)),
+                frequency = cursor.getString(cursor.getColumnIndexOrThrow(COL_FREQUENCY)),
+                reminderTime = cursor.getString(cursor.getColumnIndexOrThrow(COL_REMINDER))
+            )
+        }
+        cursor.close()
+        db.close()
+        return habit
+    }
 }

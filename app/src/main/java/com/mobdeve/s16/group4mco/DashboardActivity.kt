@@ -34,6 +34,7 @@ class DashboardActivity : AppCompatActivity() {
 
         habitDb = HabitDatabaseHelper(this)
         val userPrefs = getSharedPreferences("UserSettings", MODE_PRIVATE)
+        rescheduleAllAlarms()
 
         // Set greeting and motivation message
         binding.tvGreeting.text = "Hi, ${userPrefs.getString("LOGGED_IN_USER_FIRSTNAME", null)}!"
@@ -256,5 +257,28 @@ class DashboardActivity : AppCompatActivity() {
             }
             .setNegativeButton("Cancel", null)
             .show()
+    }
+
+    private fun rescheduleAllAlarms() {
+        val habitDb = HabitDatabaseHelper(this)
+        val allHabits = habitDb.getAllHabits()
+
+        for (habit in allHabits) {
+            try {
+                val timeParts = habit.reminderTime.split(":")
+                val hour = timeParts[0].toInt()
+                val minute = timeParts[1].toInt()
+
+                scheduleHabitNotification(
+                    context = this,
+                    habitId = habit.id,
+                    habitName = habit.name,
+                    hour = hour,
+                    minute = minute
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 }

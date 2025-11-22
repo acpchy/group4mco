@@ -109,6 +109,10 @@ class EditHabitActivity : AppCompatActivity() {
         val description = binding.etDescription.text.toString().trim()
         val category = binding.spinnerCategory.selectedItem as String
         val frequency = binding.spinnerFrequency.selectedItem as String
+        val newTime = binding.tvTimeSelected.text.toString()
+        val timeParts = newTime.split(":")
+        val hour = timeParts[0].toInt()
+        val minute = timeParts[1].toInt()
 
         if (name.isEmpty()) {
             Toast.makeText(this, "Please enter a habit name", Toast.LENGTH_SHORT).show()
@@ -127,6 +131,13 @@ class EditHabitActivity : AppCompatActivity() {
 
         // Update habit in database and show result
         val rowsAffected = habitDb.updateHabit(updatedHabit)
+        scheduleHabitNotification(
+            context = this,
+            habitId = habitId,
+            habitName = name,
+            hour = hour,
+            minute = minute
+        )
         if (rowsAffected > 0) {
             Toast.makeText(this, "Habit updated successfully", Toast.LENGTH_SHORT).show()
             finish()
