@@ -6,13 +6,16 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
+// SQLite helper class for managing the users database
 class DatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
+        // Database name and version
         private const val DATABASE_NAME = "UserDB.db"
         private const val DATABASE_VERSION = 1
 
+        // Table and column names
         const val TABLE_USERS = "users"
         const val COLUMN_ID = "id"
         const val COLUMN_NAME = "name"
@@ -21,6 +24,7 @@ class DatabaseHelper(context: Context) :
         const val COLUMN_PASSWORD = "password"
     }
 
+    // Called when database is first created
     override fun onCreate(db: SQLiteDatabase) {
         val createTable = """
             CREATE TABLE $TABLE_USERS (
@@ -38,11 +42,13 @@ class DatabaseHelper(context: Context) :
         insertDummyOnFirstLaunch(db)
     }
 
+    // Called when database version is upgraded
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS $TABLE_USERS")
         onCreate(db)
     }
 
+    // Check if dummy users already exist, then insert them
     private fun insertDummyOnFirstLaunch(db: SQLiteDatabase) {
         val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_USERS", null)
         cursor.moveToFirst()
@@ -52,6 +58,7 @@ class DatabaseHelper(context: Context) :
         insertDummyUsers(db)
     }
 
+    // Insert predefined dummy users into the database
     private fun insertDummyUsers(db: SQLiteDatabase) {
         val dummyUsers = listOf(
             Triple("John", "Doe", "john.doe@gmail.com"),
@@ -84,6 +91,7 @@ class DatabaseHelper(context: Context) :
         }
     }
 
+    // Insert a new user into the database
     fun insertUser(name: String, surname: String, email: String, password: String): Boolean {
         val db = this.writableDatabase
         val values = ContentValues().apply {
@@ -95,9 +103,10 @@ class DatabaseHelper(context: Context) :
 
         val result = db.insert(TABLE_USERS, null, values)
         db.close()
-        return result != -1L
+        return result != -1L // Return true if insert successful
     }
 
+    // Update an existing user's details based on email
     fun updateUser(email: String, newName: String, newSurname: String, newEmail: String): Boolean {
         val db = this.writableDatabase
         val values = ContentValues().apply {
@@ -108,9 +117,10 @@ class DatabaseHelper(context: Context) :
 
         val result = db.update(TABLE_USERS, values, "$COLUMN_EMAIL = ?", arrayOf(email))
         db.close()
-        return result > 0
+        return result > 0 // Return true if update affected rows
     }
 
+    // Check if a user exists with the given email and password
     fun checkUser(email: String, password: String): Boolean {
         val db = this.readableDatabase
         val cursor = db.rawQuery(
@@ -124,6 +134,7 @@ class DatabaseHelper(context: Context) :
         return exists
     }
 
+    // Check if a given email is already registered
     fun checkEmailExists(email: String): Boolean {
         val db = this.readableDatabase
         val cursor = db.rawQuery(
@@ -137,6 +148,7 @@ class DatabaseHelper(context: Context) :
         return exists
     }
 
+    // Retrieve the first name of the user with the current session email
     fun getName(currentSessionEmail: String?): String? {
         val db = this.readableDatabase
         val cursor = db.rawQuery(
@@ -153,6 +165,7 @@ class DatabaseHelper(context: Context) :
         return name
     }
 
+    // Retrieve the surname of the user with the current session email
     fun getSurname(currentSessionEmail: String?): String? {
         val db = this.readableDatabase
         val cursor = db.rawQuery(
