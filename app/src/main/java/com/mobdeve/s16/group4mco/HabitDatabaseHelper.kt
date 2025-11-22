@@ -13,6 +13,8 @@ import kotlin.random.Random
 class HabitDatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
+     // Database constants including version, table names, and column names.
+     // Two tables exist: one for habit definitions and one for completion logs.
     companion object {
         private const val DATABASE_NAME = "habit_tracker.db"
         private const val DATABASE_VERSION = 2
@@ -45,6 +47,7 @@ class HabitDatabaseHelper(context: Context) :
             );
         """.trimIndent()
 
+        // Table for logging when a habit is completed (one row per completion date per habit)
         val createLogsTable = """
             CREATE TABLE $TABLE_LOGS (
                 $COL_LOG_ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -66,6 +69,8 @@ class HabitDatabaseHelper(context: Context) :
         onCreate(db)
     }
 
+    // Inserts initial sample data into the database.
+    // Also generates random historical logs (past 5-14 days) for visualization purposes.
     private fun insertDummyData(db: SQLiteDatabase) {
         val habits = listOf(
             Habit(0, "Drink Water!", "Health", "Drink 8 glasses daily", "Daily", "08:00"),
@@ -113,6 +118,7 @@ class HabitDatabaseHelper(context: Context) :
         }
     }
 
+    // Add a habit
     fun insertHabit(habit: Habit): Long {
         val db = writableDatabase
         val cv = ContentValues().apply {
@@ -127,6 +133,7 @@ class HabitDatabaseHelper(context: Context) :
         return id
     }
 
+    // Enumerates all habits
     fun getAllHabits(): List<Habit> {
         val list = mutableListOf<Habit>()
         val db = readableDatabase
@@ -151,6 +158,7 @@ class HabitDatabaseHelper(context: Context) :
         return list
     }
 
+    // Get the number of habits
     fun countHabits(): Int {
         val db = readableDatabase
         val cursor = db.rawQuery("SELECT COUNT(*) FROM $TABLE_HABITS", null)
@@ -161,6 +169,7 @@ class HabitDatabaseHelper(context: Context) :
         return count
     }
 
+    // Mark Habit as completed
     fun markCompleted(habitId: Int, date: String) {
         val db = writableDatabase
         val cv = ContentValues().apply {
@@ -171,6 +180,7 @@ class HabitDatabaseHelper(context: Context) :
         db.close()
     }
 
+    // 'Uncompletes' (Unchecks) a completed habit
     fun removeCompletion(habitId: Int, date: String) {
         val db = writableDatabase
         db.delete(
@@ -181,6 +191,7 @@ class HabitDatabaseHelper(context: Context) :
         db.close()
     }
 
+    // Get completion date
     fun isCompletedForDate(habitId: Int, date: String): Boolean {
         val db = readableDatabase
         val cursor = db.rawQuery(
@@ -194,6 +205,7 @@ class HabitDatabaseHelper(context: Context) :
         return completed
     }
 
+    // Get number of completed activities
     fun countCompletedToday(): Int {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val db = readableDatabase
@@ -208,6 +220,9 @@ class HabitDatabaseHelper(context: Context) :
         return count
     }
 
+
+    // Calculates the current streak for a specific habit.
+    // Checks consecutive days backwards starting from today.
     fun computeStreak(habitId: Int): Int {
         val db = readableDatabase
 
@@ -247,6 +262,8 @@ class HabitDatabaseHelper(context: Context) :
         return streak
     }
 
+    // Aggregates statistics for a single habit:
+    // Total completions, Current streak, Longest streak, Last completed date.
     fun getHabitStats(habitId: Int): HabitStats {
         val db = readableDatabase
 
@@ -313,6 +330,7 @@ class HabitDatabaseHelper(context: Context) :
         )
     }
 
+    // Get the habit streak for a given range of days.
     fun calculateRangeStreak(rangeDays: Int): Int {
         val db = readableDatabase
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -363,6 +381,7 @@ class HabitDatabaseHelper(context: Context) :
         return (diff / (1000 * 60 * 60 * 24)).toInt()
     }
 
+    // Get completion trend of habits
     fun getCompletionTrend(daysBack: Int = 7): List<TrendPoint> {
         val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val labelFormatter = SimpleDateFormat("EEE", Locale.getDefault())
@@ -412,6 +431,7 @@ class HabitDatabaseHelper(context: Context) :
         return points
     }
 
+    // Get the categorical breakdown of habits
     fun getCategoryBreakdown(): List<CategoryBreakdown> {
         val db = readableDatabase
         val cursor = db.rawQuery(
@@ -441,6 +461,7 @@ class HabitDatabaseHelper(context: Context) :
         return breakdown
     }
 
+    // Get total completion points
     fun getTotalCompletionPoints(): Int {
         val db = readableDatabase
         val cursor = db.rawQuery(
@@ -454,6 +475,7 @@ class HabitDatabaseHelper(context: Context) :
         return points
     }
 
+    // Updates an existing habit
     fun updateHabit(habit: Habit): Int {
         val db = writableDatabase
         val cv = ContentValues().apply {
@@ -471,6 +493,7 @@ class HabitDatabaseHelper(context: Context) :
         )
     }
 
+    // Deletes an existing habit
     fun deleteHabit(habitId: Int): Int {
         val db = writableDatabase
 
@@ -479,6 +502,7 @@ class HabitDatabaseHelper(context: Context) :
         return db.delete(TABLE_HABITS, "$COL_ID = ?", arrayOf(habitId.toString()))
     }
 
+    // Enumerates a specific habit based on the habit ID.
     fun getHabitById(habitId: Int): Habit? {
         val db = readableDatabase
         val cursor = db.rawQuery("SELECT * FROM $TABLE_HABITS WHERE $COL_ID = ?", arrayOf(habitId.toString()))

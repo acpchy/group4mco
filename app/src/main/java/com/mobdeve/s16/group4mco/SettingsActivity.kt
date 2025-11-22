@@ -23,6 +23,7 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(binding.root)
         dbHelper = DatabaseHelper(this)
 
+        // Load current user details and settings from SharedPreferences
         val userPrefs = getSharedPreferences("UserSettings", MODE_PRIVATE)
         binding.settingsEmail.setText(userPrefs.getString("LOGGED_IN_EMAIL", null))
         binding.settingsName.setText(userPrefs.getString("LOGGED_IN_USER_FIRSTNAME", null))
@@ -35,11 +36,12 @@ class SettingsActivity : AppCompatActivity() {
         binding.snoozeDuration.isEnabled = userPrefs.getBoolean("SEND_NOTIFICATIONS", false)
         binding.changeSnoozeTimeButton.isEnabled = userPrefs.getBoolean("SEND_NOTIFICATIONS", false)
 
-
+        // Load app name, version, and icon/logo
         binding.appName.text = getString(R.string.app_name)
         binding.appVersionNumber.text = "Version ${getString(R.string.app_version)}"
         binding.appLogo.setImageResource(R.drawable.consistify_icon)
 
+        // Handle saving profile changes
         binding.saveSettingsBtn.setOnClickListener {
             val newFirstName = binding.settingsName.text.toString().trim()
             val newSurname = binding.settingSurname.text.toString().trim()
@@ -50,16 +52,19 @@ class SettingsActivity : AppCompatActivity() {
             if (newFirstName.isEmpty() || newEmail.isEmpty()) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             } else {
+                // Update SharedPreferences with new profile info
                 userPrefs.edit {
                     putString("LOGGED_IN_EMAIL", newEmail)
                     putString("LOGGED_IN_USER_FIRSTNAME", newFirstName)
                     putString("LOGGED_IN_USER_SURNAME", newSurname)
                 }
+                // Update the user record in the SQLite database
                 dbHelper.updateUser(currentEmail, newFirstName, newSurname, newEmail)
                 Toast.makeText(this, "User Profile settings saved", Toast.LENGTH_SHORT).show()
             }
         }
 
+        // Logout logic: clear preferences and redirect to Login
         binding.logoutBtn.setOnClickListener {
             userPrefs.edit {
                 clear()
@@ -70,6 +75,7 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
+        // Toggle notifications, requesting permission on Android 13+
         binding.appNotificationSwitch.setOnCheckedChangeListener { _, isChecked ->
             // Android 13 now requires the user to grant the app permission to send notifications
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -93,6 +99,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
+        // Validate and save custom snooze duration
         binding.changeSnoozeTimeButton.setOnClickListener {
             val inputStr = binding.snoozeDuration.text.toString()
             val snoozeTime = inputStr.toIntOrNull()

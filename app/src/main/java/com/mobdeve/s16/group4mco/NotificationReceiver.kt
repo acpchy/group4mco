@@ -21,6 +21,9 @@ class NotificationReceiver : BroadcastReceiver() {
         var habitTime = ""
         val userPrefs = context.getSharedPreferences("UserSettings", MODE_PRIVATE)
 
+        // Check if the user has disabled notifications in settings.
+        // If disabled, we still need to schedule the next alarm to keep the cycle alive, but
+        // we return early to avoid showing the notification.
         if (!userPrefs.getBoolean("SEND_NOTIFICATIONS", true)) {
             if (habitId != -1) {
                 val habitDb = HabitDatabaseHelper(context)
@@ -41,7 +44,7 @@ class NotificationReceiver : BroadcastReceiver() {
             val habit = habitDb.getHabitById(habitId)
 
             // Schedule the NEXT alarm for tomorrow
-            // This ensures the cycle repeats every day, even if we don't notify today.
+            // This ensures the cycle repeats every day, effectively creating a repeating alarm logic.
             if (habit != null) {
                 habitTime = habit.reminderTime
                 val timeParts = habit.reminderTime.split(":")
@@ -50,13 +53,16 @@ class NotificationReceiver : BroadcastReceiver() {
                 scheduleHabitNotification(context, habitId, habitName, hour, minute)
             }
 
-            // 1. CHECK IF DONE
+            // Check if the action is a snooze event
+            // If the action is NOT a snooze event, we check if the habit is already
+            // completed for today. If it is, we suppress the notification.
             if (intent.action != "SNOOZE_EVENT") {
                 if (habitDb.isCompletedForDate(habitId, today)) {
                     return
                 }
 
-                // 2. CHECK FREQUENCY
+                // Check Frequency
+                // Verify if the current day matches the user's selected frequency (e.g., Weekdays, 3x/week).
                 if (habit != null) {
                     val calendar = Calendar.getInstance()
                     val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
@@ -71,7 +77,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     }
 
                     if (!shouldNotify) {
-                        return // Stop, today is not a scheduled day.
+                        return
                     }
                 }
             }
@@ -79,7 +85,7 @@ class NotificationReceiver : BroadcastReceiver() {
         }
 
         // Build and Show Notification
-
+        // Prepare intents for "Mark Done" and "Snooze" actions directly from the notification bar.
         val doneIntent = Intent(context, HabitActionReceiver::class.java).apply {
             action = "ACTION_DONE"
             putExtra("NOTIFICATION_ID", notificationId)

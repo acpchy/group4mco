@@ -12,7 +12,7 @@ import java.util.Calendar
 
 @SuppressLint("ScheduleExactAlarm")
 fun scheduleHabitNotification(context: Context, habitId: Int, habitName: String, hour: Int, minute: Int) {
-    // 1. Create Notification Channel (Required for Android 8.0+)
+    // Create Notification Channel (Required for Android 8.0+)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val name = "Habit Reminders"
         val descriptionText = "Channel for habit notifications"
@@ -25,7 +25,7 @@ fun scheduleHabitNotification(context: Context, habitId: Int, habitName: String,
         notificationManager.createNotificationChannel(channel)
     }
 
-    // 2. Set the time
+    // Set the time
     val calendar = Calendar.getInstance().apply {
         set(Calendar.HOUR_OF_DAY, hour)
         set(Calendar.MINUTE, minute)
@@ -37,7 +37,7 @@ fun scheduleHabitNotification(context: Context, habitId: Int, habitName: String,
         }
     }
 
-    // 3. Create Intent for Alarm
+    // Create Intent for Alarm
     val intent = Intent(context, NotificationReceiver::class.java).apply {
         putExtra("HABIT_NAME", habitName)
         putExtra("HABIT_ID", habitId) // Critical: Pass the ID so ActionReceiver can find it later
@@ -51,7 +51,7 @@ fun scheduleHabitNotification(context: Context, habitId: Int, habitName: String,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
-    // 4. Schedule Alarm
+    // Schedule Alarm
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

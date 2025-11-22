@@ -9,14 +9,13 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.widget.Toast
-import androidx.compose.ui.text.intl.Locale
 import java.text.SimpleDateFormat
 import java.util.Date
-import kotlin.text.format
 
 class HabitActionReceiver : BroadcastReceiver() {
     @SuppressLint("ScheduleExactAlarm")
     override fun onReceive(context: Context, intent: Intent) {
+        // Retrieve data passed from the notification intent
         val notificationId = intent.getIntExtra("NOTIFICATION_ID", 0)
         val habitName = intent.getStringExtra("HABIT_NAME")
         val habitId = intent.getIntExtra("HABIT_ID", -1)
@@ -24,16 +23,18 @@ class HabitActionReceiver : BroadcastReceiver() {
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val userPrefs = context.getSharedPreferences("UserSettings", MODE_PRIVATE)
 
+        // Dismiss the current notification since the user interacted with it
         notificationManager.cancel(notificationId)
 
         when (intent.action) {
             "ACTION_DONE" -> {
+                // Handle the "Mark as done" action: mark the habit as completed in the database
                 if (habitId != -1) {
                     val habitDb = HabitDatabaseHelper(context)
                     val today =
                         SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(Date())
 
-                    // Update database
+                    // Update database to record completion for today
                     habitDb.markCompleted(habitId, today)
 
                     Toast.makeText(context, "Great job completing $habitName!", Toast.LENGTH_SHORT)
@@ -48,6 +49,7 @@ class HabitActionReceiver : BroadcastReceiver() {
             }
 
             "ACTION_SNOOZE" -> {
+                // Handle the "Snooze" action: reschedule the notification
                 val snoozeMinutes = userPrefs.getInt("SNOOZE_TIME", 5)
                 val snoozeDuration = java.util.concurrent.TimeUnit.MINUTES.toMillis(
                     snoozeMinutes.toLong())
@@ -71,7 +73,7 @@ class HabitActionReceiver : BroadcastReceiver() {
 
                 val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-                // Android 12+ Permission Safety Check
+                // Android 12+ Permission Safety Check for exact alarms
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                     if (alarmManager.canScheduleExactAlarms()) {
                         alarmManager.setExactAndAllowWhileIdle(
