@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Choose your first habits. You may add more later."
+            android:text="Get on board and start creating and tracking good habits"
             android:textColor="@color/color_on_surface_secondary"
             android:textSize="15sp" />
 
@@ -75,21 +75,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:hint="Birthdate"
-                    app:boxBackgroundMode="filled">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/regBirthdate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="date" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
                     android:hint="Email"
                     app:boxBackgroundMode="filled">
 
@@ -132,107 +117,6 @@
                         android:inputType="textPassword" />
 
                 </com.google.android.material.textfield.TextInputLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Choose your first habits"
-                    android:textColor="@color/color_on_surface"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipGroupHabits"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    app:singleLine="false">
-
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Drink water"
-                        android:checkable="true"
-                        app:chipIcon="@drawable/ic_habit_water"
-                        app:chipIconTint="@color/habit_water"
-                        app:chipBackgroundColor="@color/color_surface_alt"
-                        app:chipStrokeWidth="0dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Run"
-                        android:checkable="true"
-                        app:chipIcon="@drawable/ic_habit_run"
-                        app:chipIconTint="@color/habit_run"
-                        app:chipBackgroundColor="@color/color_surface_alt"
-                        app:chipStrokeWidth="0dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Read books"
-                        android:checkable="true"
-                        app:chipIcon="@drawable/ic_habit_read"
-                        app:chipIconTint="@color/habit_read"
-                        app:chipBackgroundColor="@color/color_surface_alt"
-                        app:chipStrokeWidth="0dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Meditate"
-                        android:checkable="true"
-                        app:chipIcon="@drawable/ic_habit_meditate"
-                        app:chipIconTint="@color/habit_meditate"
-                        app:chipBackgroundColor="@color/color_surface_alt"
-                        app:chipStrokeWidth="0dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Study"
-                        android:checkable="true"
-                        app:chipIcon="@drawable/ic_habit_study"
-                        app:chipIconTint="@color/habit_study"
-                        app:chipBackgroundColor="@color/color_surface_alt"
-                        app:chipStrokeWidth="0dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Journal"
-                        android:checkable="true"
-                        app:chipIcon="@drawable/ic_habit_journal"
-                        app:chipIconTint="@color/habit_journal"
-                        app:chipBackgroundColor="@color/color_surface_alt"
-                        app:chipStrokeWidth="0dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Gardening"
-                        android:checkable="true"
-                        app:chipBackgroundColor="@color/color_surface_alt"
-                        app:chipStrokeWidth="0dp"
-                        app:checkedIconVisible="false" />
-
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sleep early"
-                        android:checkable="true"
-                        app:chipBackgroundColor="@color/color_surface_alt"
-                        app:chipStrokeWidth="0dp"
-                        app:checkedIconVisible="false" />
-                </com.google.android.material.chip.ChipGroup>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/registerBtn"

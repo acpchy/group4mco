@@ -54,10 +54,6 @@ class RegisterActivity : AppCompatActivity() {
             // Insert new user into database
             val success = dbHelper.insertUser(name, surname, email, password)
 
-            // Get any selected habit chips from onboarding form
-            val selectedHabits = binding.chipGroupHabits.checkedChipIds.mapNotNull { id ->
-                binding.chipGroupHabits.findViewById<Chip>(id)?.text?.toString()
-            }
 
             if (success) {
                 // Save user login info in SharedPreferences
@@ -68,13 +64,8 @@ class RegisterActivity : AppCompatActivity() {
                     putBoolean("IS_LOGGED_IN", true)
                 }
 
-                // Show welcome message including selected habits if any
-                val message = if (selectedHabits.isNotEmpty()) {
-                    "Welcome! ${userPrefs.getString("LOGGED_IN_USER_FIRSTNAME", null)}. Your First habits is/are: ${selectedHabits.joinToString()}"
-                } else {
-                    "Welcome! ${userPrefs.getString("LOGGED_IN_USER_FIRSTNAME", null)}"
-                }
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                // Show welcome message
+                "Welcome! ${userPrefs.getString("LOGGED_IN_USER_FIRSTNAME", null)}"
 
                 // Navigate to Dashboard
                 startActivity(Intent(this, DashboardActivity::class.java))
