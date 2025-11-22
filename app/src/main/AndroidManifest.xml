@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.mobdeve.s16.group4mco">
+    package="com.itismob.s16.group4mco">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
@@ -18,10 +18,10 @@
         android:theme="@style/Theme.Group4mco"
         tools:targetApi="31">
 
-        <receiver android:name=".NotificationReceiver" />
-        <receiver android:name=".HabitActionReceiver" />
+        <receiver android:name="com.itismob.s16.group4mco.NotificationReceiver" />
+        <receiver android:name="com.itismob.s16.group4mco.HabitActionReceiver" />
         <receiver
-            android:name=".BootReceiver"
+            android:name="com.itismob.s16.group4mco.BootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -31,7 +31,7 @@
 
         <!-- Splash / Entry Point -->
         <activity
-            android:name=".MainActivity"
+            android:name="com.itismob.s16.group4mco.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Group4mco">
             <intent-filter>
@@ -40,19 +40,19 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".OnboardingActivity" />
+        <activity android:name="com.itismob.s16.group4mco.OnboardingActivity" />
 
         <!-- AUTH -->
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".RegisterActivity" />
+        <activity android:name="com.itismob.s16.group4mco.LoginActivity" />
+        <activity android:name="com.itismob.s16.group4mco.RegisterActivity" />
 
         <!-- CORE APP SCREENS -->
-        <activity android:name=".DashboardActivity" />
-        <activity android:name=".AddHabitActivity" />
-        <activity android:name=".ProgressActivity" />
-        <activity android:name=".AchievementsActivity" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".EditHabitActivity"/>
+        <activity android:name="com.itismob.s16.group4mco.DashboardActivity" />
+        <activity android:name="com.itismob.s16.group4mco.AddHabitActivity" />
+        <activity android:name="com.itismob.s16.group4mco.ProgressActivity" />
+        <activity android:name="com.itismob.s16.group4mco.AchievementsActivity" />
+        <activity android:name="com.itismob.s16.group4mco.SettingsActivity" />
+        <activity android:name="com.itismob.s16.group4mco.EditHabitActivity"/>
     </application>
 
 </manifest>

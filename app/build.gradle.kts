@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mobdeve.s16.group4mco"
+    namespace = "com.itismob.s16.group4mco"
     compileSdk = 36
 
     defaultConfig {
