@@ -77,7 +77,21 @@ class AddHabitActivity : AppCompatActivity() {
             reminderTime = selectedTime
         )
 
-        db.insertHabit(habit)
+        val newHabitId = db.insertHabit(habit)
+
+        if (newHabitId != -1L) {
+            val timeParts = selectedTime.split(":")
+            val hour = timeParts[0].toInt()
+            val minute = timeParts[1].toInt()
+
+            scheduleHabitNotification(
+                context = this,
+                habitId = newHabitId.toInt(),
+                habitName = name,
+                hour = hour,
+                minute = minute
+            )
+        }
         finish()
     }
 }
