@@ -20,11 +20,12 @@ import com.mobdeve.s16.group4mco.databinding.ActivityDashboardBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
+// Main dashboard activity showing user's habits, greeting, and navigation
 class DashboardActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityDashboardBinding
-    private lateinit var habitDb: HabitDatabaseHelper
-    private var habits = listOf<Habit>()
+    private lateinit var binding: ActivityDashboardBinding // View binding
+    private lateinit var habitDb: HabitDatabaseHelper       // Database helper for habits
+    private var habits = listOf<Habit>()                   // List of habits loaded from DB
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,10 +35,12 @@ class DashboardActivity : AppCompatActivity() {
         habitDb = HabitDatabaseHelper(this)
         val userPrefs = getSharedPreferences("UserSettings", MODE_PRIVATE)
 
+        // Set greeting and motivation message
         binding.tvGreeting.text = "Hi, ${userPrefs.getString("LOGGED_IN_USER_FIRSTNAME", null)}!"
         binding.tvMotivation.text = "Let's make habits together!"
 
         // Android 13 now requires the user to grant the app permission to send notifications
+        // Handle notification permission for Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ActivityCompat.checkSelfPermission(this,
                     Manifest.permission.POST_NOTIFICATIONS
@@ -54,16 +57,18 @@ class DashboardActivity : AppCompatActivity() {
             userPrefs.edit { putBoolean("SEND_NOTIFICATIONS", true) }
         }
 
+        // Display today's date
         binding.tvDate.text = todayDate()
 
+        // Button click listeners for adding habits or checking progress
         binding.btnAddHabit.setOnClickListener {
             startActivity(Intent(this, AddHabitActivity::class.java))
         }
-
         binding.btnCheckProgress.setOnClickListener {
             startActivity(Intent(this, ProgressActivity::class.java))
         }
 
+        // Navigation bar listeners
         binding.navHome.setOnClickListener {
             // already home
         }
@@ -80,12 +85,12 @@ class DashboardActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        loadHabits()
+        loadHabits() // Reload habits whenever the activity resumes
     }
-
     // Set the "SEND_NOTIFICATIONS" SharedPreferences to true when the user presses "Allow"
     // when their Android device (at least running Android 13) informs that the app needs to
     // permission to send notifications
+    // Handles the result from notification permission dialog
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -100,12 +105,13 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
+    // Loads all habits from the database and displays them in cards
     private fun loadHabits() {
         binding.habitContainer.removeAllViews()
         habits = habitDb.getAllHabits()
-
         val today = todayDateDatabaseFormat()
 
+        // UI styling values
         val margin = resources.getDimensionPixelSize(R.dimen.spacing_3)
         val padding = resources.getDimensionPixelSize(R.dimen.card_padding)
         val cornerRadius = resources.getDimension(R.dimen.card_corner_radius)
@@ -113,6 +119,7 @@ class DashboardActivity : AppCompatActivity() {
         val surfaceColor = ContextCompat.getColor(this, R.color.color_surface)
         val textSecondary = ContextCompat.getColor(this, R.color.color_on_surface_secondary)
 
+        // Loop through each habit and create its card
         for ((index, habit) in habits.withIndex()) {
             val card = MaterialCardView(this).apply {
                 layoutParams = LinearLayout.LayoutParams(
@@ -135,6 +142,7 @@ class DashboardActivity : AppCompatActivity() {
                 )
             }
 
+            // CheckBox for marking habit completion
             val cb = CheckBox(this).apply {
                 text = habit.name
                 textSize = 18f
@@ -155,6 +163,7 @@ class DashboardActivity : AppCompatActivity() {
                     }
                 }
 
+                // Long press opens edit habit activity
                 setOnLongClickListener {
                     val intent = Intent(this@DashboardActivity, EditHabitActivity::class.java)
                     intent.putExtra("habitId", habit.id)
@@ -163,6 +172,7 @@ class DashboardActivity : AppCompatActivity() {
                 }
             }
 
+            // TextView for habit description
             val desc = TextView(this).apply {
                 text = habit.description ?: ""
                 textSize = 14f
@@ -170,11 +180,13 @@ class DashboardActivity : AppCompatActivity() {
                 setPadding(8, 0, 8, 8)
             }
 
+            // Horizontal row for action buttons
             val actionsRow = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 setPadding(0, 8, 0, 0)
             }
 
+            // Edit habit button
             val editButton = ImageButton(this).apply {
                 setImageResource(android.R.drawable.ic_menu_edit)
                 background = null
@@ -187,6 +199,7 @@ class DashboardActivity : AppCompatActivity() {
                 setOnClickListener { launchEditHabit(habit.id) }
             }
 
+            // Delete habit button
             val deleteButton = ImageButton(this).apply {
                 setImageResource(android.R.drawable.ic_menu_delete)
                 background = null
@@ -202,30 +215,37 @@ class DashboardActivity : AppCompatActivity() {
             actionsRow.addView(editButton)
             actionsRow.addView(deleteButton)
 
+            // Add views to habit layout
             habitLayout.addView(cb)
             habitLayout.addView(desc)
             habitLayout.addView(actionsRow)
 
+            // Add habit layout to card, then card to container
             card.addView(habitLayout)
             binding.habitContainer.addView(card)
         }
     }
 
+    // Returns today's date in display format (e.g., "November 22, 2025")
     private fun todayDate(): String {
         val sdf = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault())
         return sdf.format(Date())
     }
+
+    // Returns today's date in database format (e.g., "2025-11-22")
     private fun todayDateDatabaseFormat(): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return sdf.format(Date())
     }
 
+    // Launches the EditHabitActivity for a given habit
     private fun launchEditHabit(habitId: Int) {
         val intent = Intent(this, EditHabitActivity::class.java)
         intent.putExtra("habitId", habitId)
         startActivity(intent)
     }
 
+    // Prompts user with confirmation dialog before deleting a habit
     private fun confirmDeleteHabit(habit: Habit) {
         AlertDialog.Builder(this)
             .setTitle("Delete \"${habit.name}\"?")
