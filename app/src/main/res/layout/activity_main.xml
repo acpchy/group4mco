@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_app_gradient"
@@ -33,15 +34,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.353">
 
-        <TextView
-            android:id="@+id/logoMark"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="✓"
-            android:textAlignment="center"
-            android:textColor="@color/color_on_surface"
-            android:textSize="48sp"
-            android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/splashLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="143dp"
+            tools:srcCompat="@drawable/consistify_icon" />
 
         <TextView
             android:id="@+id/logoText"

@@ -21,6 +21,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Set the Consistify logo on app's splash screen
+        binding.splashLogo.setImageResource(R.drawable.consistify_icon)
+
         // "Get Started" button click listener
         binding.btnGetStarted.setOnClickListener {
             navigateToOnboarding()  // Navigate to onboarding screen

@@ -101,7 +101,7 @@ class NotificationReceiver : BroadcastReceiver() {
         )
 
         val builder = NotificationCompat.Builder(context, "habit_channel_id")
-            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setSmallIcon(R.drawable.consistify_icon_notification)
             .setContentTitle("$habitName at $habitTime")
             .setContentText("Are you done with this habit or you want to snooze this habit for an additional ${userPrefs.getInt("SNOOZE_TIME", 5)} minute(s)?")
             .setPriority(NotificationCompat.PRIORITY_HIGH)

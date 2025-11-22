@@ -38,6 +38,7 @@ class SettingsActivity : AppCompatActivity() {
 
         binding.appName.text = getString(R.string.app_name)
         binding.appVersionNumber.text = "Version ${getString(R.string.app_version)}"
+        binding.appLogo.setImageResource(R.drawable.consistify_icon)
 
         binding.saveSettingsBtn.setOnClickListener {
             val newFirstName = binding.settingsName.text.toString().trim()
