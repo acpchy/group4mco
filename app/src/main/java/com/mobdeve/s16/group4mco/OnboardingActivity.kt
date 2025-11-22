@@ -13,6 +13,7 @@ class OnboardingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityOnboardingBinding
     private lateinit var adapter: OnboardingAdapter
 
+    // List of onboarding pages to display
     private val pages = listOf(
         OnboardingPage(
             title = "Create\nGood Habits",
@@ -38,40 +39,46 @@ class OnboardingActivity : AppCompatActivity() {
         binding = ActivityOnboardingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize the ViewPager2 adapter with onboarding pages
         adapter = OnboardingAdapter(pages)
         binding.onboardingPager.adapter = adapter
 
+        // Connect the TabLayout indicator with the ViewPager2
         TabLayoutMediator(binding.indicator, binding.onboardingPager) { _, _ -> }.attach()
 
+        // Primary CTA button click listener
         binding.primaryCta.setOnClickListener {
             if (binding.onboardingPager.currentItem < pages.lastIndex) {
+                // Go to the next page
                 binding.onboardingPager.currentItem = binding.onboardingPager.currentItem + 1
             } else {
+                // If last page, navigate to Login screen
                 goToLogin()
             }
         }
 
+        // Skip button click listener: directly go to last page
         binding.btnSkip.setOnClickListener {
             binding.onboardingPager.currentItem = pages.lastIndex
         }
 
+        // Change primary CTA text based on current page
         binding.onboardingPager.registerOnPageChangeCallback(object :
             androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 binding.primaryCta.text = if (position == pages.lastIndex) {
-                    "Let's Get Started!"
+                    "Let's Get Started!" // Last page
                 } else {
-                    "Next >"
+                    "Next >" // Other pages
                 }
             }
         })
     }
 
+    // Navigate to LoginActivity and finish onboarding
     private fun goToLogin() {
         startActivity(Intent(this, LoginActivity::class.java))
         finish()
     }
 }
-
-
