@@ -18,56 +18,74 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // SharedPreferences to store user login info
         val userPrefs = getSharedPreferences("UserSettings", MODE_PRIVATE)
+
+        // Database helper to access user data
         dbHelper = DatabaseHelper(this)
 
+        // Registration button click listener
         binding.registerBtn.setOnClickListener {
+            // Get user input from form fields
             val name = binding.regName.text.toString().trim()
             val surname = binding.regSurname.text.toString().trim()
             val email = binding.regEmail.text.toString().trim()
             val password = binding.regPassword.text.toString().trim()
             val confirmPassword = binding.regConfirmPassword.text.toString().trim()
 
+            // Validate that all fields are filled
             if (name.isEmpty() || surname.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            // Check if passwords match
             if (password != confirmPassword) {
                 Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            // Check if email is already registered
             if (dbHelper.checkEmailExists(email)) {
                 Toast.makeText(this, "Email already registered!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            // Insert new user into database
             val success = dbHelper.insertUser(name, surname, email, password)
+
+            // Get any selected habit chips from onboarding form
             val selectedHabits = binding.chipGroupHabits.checkedChipIds.mapNotNull { id ->
                 binding.chipGroupHabits.findViewById<Chip>(id)?.text?.toString()
             }
 
             if (success) {
+                // Save user login info in SharedPreferences
                 userPrefs.edit {
                     putString("LOGGED_IN_EMAIL", email)
                     putString("LOGGED_IN_USER_FIRSTNAME", dbHelper.getName(email))
                     putString("LOGGED_IN_USER_SURNAME", dbHelper.getSurname(email))
                     putBoolean("IS_LOGGED_IN", true)
                 }
+
+                // Show welcome message including selected habits if any
                 val message = if (selectedHabits.isNotEmpty()) {
                     "Welcome! ${userPrefs.getString("LOGGED_IN_USER_FIRSTNAME", null)}. Your First habits is/are: ${selectedHabits.joinToString()}"
                 } else {
                     "Welcome! ${userPrefs.getString("LOGGED_IN_USER_FIRSTNAME", null)}"
                 }
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
+                // Navigate to Dashboard
                 startActivity(Intent(this, DashboardActivity::class.java))
                 finish()
             } else {
+                // Show error if registration failed
                 Toast.makeText(this, "Registration failed", Toast.LENGTH_SHORT).show()
             }
         }
 
+        // Navigate to login activity if user clicks the login link
         binding.toLogin.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
         }
