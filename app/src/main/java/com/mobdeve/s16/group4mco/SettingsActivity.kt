@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.semantics.error
 import androidx.core.app.ActivityCompat
 import androidx.core.content.edit
 import com.mobdeve.s16.group4mco.databinding.ActivitySettingsBinding
@@ -30,6 +31,10 @@ class SettingsActivity : AppCompatActivity() {
         binding.appNotificationSwitch.isChecked = userPrefs.getBoolean(
             "SEND_NOTIFICATIONS",
             false)
+        binding.snoozeDuration.setText(userPrefs.getInt("SNOOZE_TIME", 5).toString())
+        binding.snoozeDuration.isEnabled = userPrefs.getBoolean("SEND_NOTIFICATIONS", false)
+        binding.changeSnoozeTimeButton.isEnabled = userPrefs.getBoolean("SEND_NOTIFICATIONS", false)
+
 
         binding.appName.text = getString(R.string.app_name)
         binding.appVersionNumber.text = "Version ${getString(R.string.app_version)}"
@@ -50,7 +55,7 @@ class SettingsActivity : AppCompatActivity() {
                     putString("LOGGED_IN_USER_SURNAME", newSurname)
                 }
                 dbHelper.updateUser(currentEmail, newFirstName, newSurname, newEmail)
-                Toast.makeText(this, "Settings saved", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "User Profile settings saved", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -77,9 +82,25 @@ class SettingsActivity : AppCompatActivity() {
                     )
                 } else {
                     userPrefs.edit { putBoolean("SEND_NOTIFICATIONS", isChecked) }
+                    binding.snoozeDuration.isEnabled = isChecked
+                    binding.changeSnoozeTimeButton.isEnabled = isChecked
                 }
             } else {
                 userPrefs.edit { putBoolean("SEND_NOTIFICATIONS", isChecked) }
+                binding.snoozeDuration.isEnabled = isChecked
+                binding.changeSnoozeTimeButton.isEnabled = isChecked
+            }
+        }
+
+        binding.changeSnoozeTimeButton.setOnClickListener {
+            val inputStr = binding.snoozeDuration.text.toString()
+            val snoozeTime = inputStr.toIntOrNull()
+            if (snoozeTime != null && snoozeTime in 1..10) {
+                userPrefs.edit { putInt("SNOOZE_TIME", snoozeTime) }
+                binding.snoozeDuration.error = null
+                Toast.makeText(this, "Snooze time changed to $snoozeTime minute(s)", Toast.LENGTH_SHORT).show()
+            } else {
+                binding.snoozeDuration.error = "Please enter a time between 1 and 10 minutes"
             }
         }
     }
@@ -97,6 +118,8 @@ class SettingsActivity : AppCompatActivity() {
             val userPrefs = getSharedPreferences("UserSettings", MODE_PRIVATE)
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 userPrefs.edit { putBoolean("SEND_NOTIFICATIONS", true) }
+                binding.snoozeDuration.isEnabled = true
+                binding.changeSnoozeTimeButton.isEnabled = true
             }
         }
     }

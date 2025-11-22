@@ -141,9 +141,44 @@
                 <TextView
                     android:id="@+id/textView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_weight="0"
                     android:text="You need to give this app permission to send in notifications for this feature to work" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="Snooze Time (in minutes)"
+                    app:boxBackgroundMode="filled"
+                    app:boxStrokeColor="@color/color_primary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/snoozeDuration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:layout_marginTop="3dp"
+                    android:text="Enter a custom snooze time between 1 and 10 minutes." />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/changeSnoozeTimeButton"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Change Snooze Time"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="5dp"
+                    app:cornerRadius="22dp" />
+
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>

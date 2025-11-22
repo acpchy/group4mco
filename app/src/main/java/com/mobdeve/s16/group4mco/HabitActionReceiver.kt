@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.ui.text.intl.Locale
@@ -21,6 +22,7 @@ class HabitActionReceiver : BroadcastReceiver() {
         val habitId = intent.getIntExtra("HABIT_ID", -1)
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val userPrefs = context.getSharedPreferences("UserSettings", MODE_PRIVATE)
 
         notificationManager.cancel(notificationId)
 
@@ -28,23 +30,29 @@ class HabitActionReceiver : BroadcastReceiver() {
             "ACTION_DONE" -> {
                 if (habitId != -1) {
                     val habitDb = HabitDatabaseHelper(context)
-                    val today = SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(Date())
+                    val today =
+                        SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(Date())
 
                     // Update database
                     habitDb.markCompleted(habitId, today)
 
-                    Toast.makeText(context, "Great job completing $habitName!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Great job completing $habitName!", Toast.LENGTH_SHORT)
+                        .show()
 
-                    // Optional: Send a broadcast to DashboardActivity to refresh the UI immediately
+                    // Send a broadcast to DashboardActivity to refresh the UI immediately
                     val refreshIntent = Intent("com.mobdeve.s16.group4mco.REFRESH_DASHBOARD")
                     context.sendBroadcast(refreshIntent)
                 }
-                Toast.makeText(context, "Great job completing $habitName!", Toast.LENGTH_SHORT)
+                Toast.makeText(context, "Great job completing your '$habitName' habit!", Toast.LENGTH_SHORT)
                     .show()
             }
 
             "ACTION_SNOOZE" -> {
-                val snoozeTime = System.currentTimeMillis() + (2 *60 * 1000)
+                val snoozeMinutes = userPrefs.getInt("SNOOZE_TIME", 5)
+                val snoozeDuration = java.util.concurrent.TimeUnit.MINUTES.toMillis(
+                    snoozeMinutes.toLong())
+
+                val snoozeTime = System.currentTimeMillis() + snoozeDuration
 
                 // Create an intent to re-trigger the NotificationReceiver
                 val snoozeIntent = Intent(context, NotificationReceiver::class.java).apply {
@@ -87,8 +95,8 @@ class HabitActionReceiver : BroadcastReceiver() {
                         pendingIntent
                     )
                 }
-
-                Toast.makeText(context, "Snoozed $habitName for 2 minutes", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Snoozed the habit '$habitName' for ${userPrefs.getInt("SNOOZE_TIME", 5)} minute(s)", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }

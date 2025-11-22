@@ -4,6 +4,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import java.text.SimpleDateFormat
@@ -17,6 +18,22 @@ class NotificationReceiver : BroadcastReceiver() {
         val habitName = intent.getStringExtra("HABIT_NAME") ?: "Habit"
         val habitId = intent.getIntExtra("HABIT_ID", -1)
         val notificationId = intent.getIntExtra("NOTIFICATION_ID", 0)
+        var habitTime = ""
+        val userPrefs = context.getSharedPreferences("UserSettings", MODE_PRIVATE)
+
+        if (!userPrefs.getBoolean("SEND_NOTIFICATIONS", true)) {
+            if (habitId != -1) {
+                val habitDb = HabitDatabaseHelper(context)
+                val habit = habitDb.getHabitById(habitId)
+                if (habit != null) {
+                    val timeParts = habit.reminderTime.split(":")
+                    val hour = timeParts[0].toInt()
+                    val minute = timeParts[1].toInt()
+                    scheduleHabitNotification(context, habitId, habitName, hour, minute)
+                }
+            }
+            return
+        }
 
         if (habitId != -1) {
             val habitDb = HabitDatabaseHelper(context)
@@ -26,13 +43,10 @@ class NotificationReceiver : BroadcastReceiver() {
             // Schedule the NEXT alarm for tomorrow
             // This ensures the cycle repeats every day, even if we don't notify today.
             if (habit != null) {
+                habitTime = habit.reminderTime
                 val timeParts = habit.reminderTime.split(":")
                 val hour = timeParts[0].toInt()
                 val minute = timeParts[1].toInt()
-
-                // We schedule for "Tomorrow" by relying on the logic inside
-                // scheduleHabitNotification checking timeInMillis vs currentTime.
-                // Since the alarm just fired, calling this now will naturally set it for tomorrow.
                 scheduleHabitNotification(context, habitId, habitName, hour, minute)
             }
 
@@ -88,8 +102,8 @@ class NotificationReceiver : BroadcastReceiver() {
 
         val builder = NotificationCompat.Builder(context, "habit_channel_id")
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-            .setContentTitle("Time for your habit!")
-            .setContentText("Have you completed: $habitName?")
+            .setContentTitle("$habitName at $habitTime")
+            .setContentText("Are you done with this habit or you want to snooze this habit for an additional ${userPrefs.getInt("SNOOZE_TIME", 5)} minute(s)?")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
             .addAction(android.R.drawable.checkbox_on_background, "Mark Done", donePendingIntent)

@@ -39,8 +39,12 @@ class MainActivity : AppCompatActivity() {
         val isLoggedIn = userPrefs.getBoolean("IS_LOGGED_IN", false)            // Check if user is logged in
 
         if (isFirstTime) {
-            // Mark that the app has been launched before
-            appSettingsPrefs.edit { putBoolean("IS_FIRST_TIME", false) }
+            // Mark that the app has been launched before and a default notification snooze time
+            // (for habits) of 5 minutes.
+            appSettingsPrefs.edit {
+                putInt("SNOOZE_TIME", 5)
+                putBoolean("IS_FIRST_TIME", false)
+            }
             startActivity(Intent(this, OnboardingActivity::class.java))  // Show onboarding screen
         } else {
             if (isLoggedIn) {
