@@ -26,11 +26,12 @@ class ProgressActivity : AppCompatActivity() {
 
         habitDb = HabitDatabaseHelper(this)
 
+        // Bottom navigation click listeners
         binding.navHome.setOnClickListener {
             startActivity(Intent(this, DashboardActivity::class.java))
         }
         binding.navProgress.setOnClickListener {
-            // already at progress activity
+            // Already at ProgressActivity; do nothing
         }
         binding.navAchievements.setOnClickListener {
             startActivity(Intent(this, AchievementsActivity::class.java))
@@ -42,40 +43,55 @@ class ProgressActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Refresh progress data when returning to this activity
         updateProgress()
     }
 
+    /**
+     * Updates all progress-related UI elements:
+     * - Today's completion %
+     * - Best streak
+     * - Weekly & monthly streaks
+     * - Completion trend chart
+     * - Category breakdown
+     * - Gamification points and badges
+     */
     private fun updateProgress() {
         val totalHabits = habitDb.countHabits()
         val completedToday = habitDb.countCompletedToday()
         val percent = if (totalHabits == 0) 0 else (completedToday * 100 / totalHabits)
 
+        // Update progress bar and text
         binding.progressBar.progress = percent
         binding.progressText.text = "Today's Completion: $percent%"
 
+        // Calculate best streak across all habits
         var bestStreak = 0
         val habits = habitDb.getAllHabits()
         for (h in habits) {
             val stats = habitDb.getHabitStats(h.id)
             if (stats.streak > bestStreak) bestStreak = stats.streak
         }
-
         binding.streakInfo.text = "🔥 Best streak: $bestStreak days"
 
+        // Calculate weekly and monthly streaks
         val weeklyStreak = habitDb.calculateRangeStreak(7)
         val monthlyStreak = habitDb.calculateRangeStreak(30)
         binding.weeklyStreakValue.text = "$weeklyStreak days"
         binding.monthlyStreakValue.text = "$monthlyStreak days"
 
+        // Render trend chart and category breakdown
         renderTrend(habitDb.getCompletionTrend(7), totalHabits)
         renderCategoryBreakdown(habitDb.getCategoryBreakdown())
 
+        // Calculate points and badges
         val points = habitDb.getTotalCompletionPoints()
         binding.pointsValue.text = "$points pts"
-
         val totalCompletions = habits.sumOf { habitDb.getHabitStats(it.id).totalCompletions }
         val badges = GamificationHelper.buildBadges(bestStreak, points, totalCompletions)
         renderBadges(badges)
+
+        // Show motivational message if badges exist
         val motivation = GamificationHelper.motivationMessage(bestStreak)
         if (badges.isNotEmpty()) {
             binding.badgesContainer.addView(TextView(this).apply {
@@ -87,13 +103,15 @@ class ProgressActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Renders the completion trend chart (7-day) as horizontal progress bars
+     */
     private fun renderTrend(points: List<TrendPoint>, totalHabits: Int) {
         val container = binding.trendContainer
         container.removeAllViews()
 
         val primaryColor = ContextCompat.getColor(this, R.color.color_primary)
         val backgroundTint = ContextCompat.getColor(this, R.color.color_surface_alt)
-
         val maxProgress = if (totalHabits == 0) 1 else totalHabits
 
         points.forEach { point ->
@@ -125,6 +143,9 @@ class ProgressActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Renders a breakdown of completions by habit category
+     */
     private fun renderCategoryBreakdown(categories: List<CategoryBreakdown>) {
         val container = binding.categoryBreakdownContainer
         container.removeAllViews()
@@ -165,6 +186,9 @@ class ProgressActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Renders badges earned by the user
+     */
     private fun renderBadges(badges: List<String>) {
         val container = binding.badgesContainer
         container.removeAllViews()
