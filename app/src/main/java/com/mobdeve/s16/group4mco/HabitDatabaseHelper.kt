@@ -8,6 +8,7 @@ import com.mobdeve.s16.group4mco.analytics.CategoryBreakdown
 import com.mobdeve.s16.group4mco.analytics.TrendPoint
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.random.Random
 
 class HabitDatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -55,12 +56,61 @@ class HabitDatabaseHelper(context: Context) :
 
         db.execSQL(createHabitsTable)
         db.execSQL(createLogsTable)
+
+        insertDummyData(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS $TABLE_HABITS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_LOGS")
         onCreate(db)
+    }
+
+    private fun insertDummyData(db: SQLiteDatabase) {
+        val habits = listOf(
+            Habit(0, "Drink Water!", "Health", "Drink 8 glasses daily", "Daily", "08:00"),
+            Habit(0, "Study for CCPROG1 Final Exam", "Study", "Study for 2 hours", "Daily", "18:00"),
+            Habit(0, "Cardio Exercise", "Health", "30-minute exercise, 3 sets, 15-min run", "Weekdays", "14:30"),
+            Habit(0, "Meditate & Pray", "Lifestyle", "Meditate for 10 mins and do a little bit of yoga", "Daily", "21:00"),
+            Habit(0, "Clean your room!", "Lifestyle", "30-minute cleanup", "Weekends", "10:00"),
+        )
+
+        val habitIds = mutableListOf<Int>()
+
+        for (habit in habits) {
+            val cv = ContentValues().apply {
+                put(COL_NAME, habit.name)
+                put(COL_CATEGORY, habit.category)
+                put(COL_DESCRIPTION, habit.description)
+                put(COL_FREQUENCY, habit.frequency)
+                put(COL_REMINDER, habit.reminderTime)
+            }
+            val id = db.insert(TABLE_HABITS, null, cv).toInt()
+            habitIds.add(id)
+        }
+
+        // Populate logs (7–14 days back)
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+
+        for (habitId in habitIds) {
+            val daysOfLogs = Random.nextInt(5, 14) // 5 to 14 days of logs
+
+            for (i in 0 until daysOfLogs) {
+                calendar.time = Date()
+                calendar.add(Calendar.DAY_OF_YEAR, -i)
+                val date = sdf.format(calendar.time)
+
+                // 70% chance log exists on that day
+                if (Random.nextFloat() < 0.7f) {
+                    val cv = ContentValues().apply {
+                        put(COL_HABIT_ID, habitId)
+                        put(COL_DATE, date)
+                    }
+                    db.insert(TABLE_LOGS, null, cv)
+                }
+            }
+        }
     }
 
     fun insertHabit(habit: Habit): Long {
@@ -145,9 +195,7 @@ class HabitDatabaseHelper(context: Context) :
     }
 
     fun countCompletedToday(): Int {
-        val today = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(
-            java.util.Date()
-        )
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val db = readableDatabase
         val cursor = db.rawQuery(
             "SELECT COUNT(DISTINCT $COL_HABIT_ID) FROM $TABLE_LOGS WHERE $COL_DATE = ?",
@@ -180,8 +228,8 @@ class HabitDatabaseHelper(context: Context) :
         }
 
         var streak = 0
-        val calendar = java.util.Calendar.getInstance()
-        val formatter = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
         var expectedDate = formatter.format(calendar.time)
 
@@ -189,7 +237,7 @@ class HabitDatabaseHelper(context: Context) :
             val loggedDate = cursor.getString(cursor.getColumnIndexOrThrow(COL_DATE))
             if (loggedDate == expectedDate) {
                 streak++
-                calendar.add(java.util.Calendar.DAY_OF_YEAR, -1)
+                calendar.add(Calendar.DAY_OF_YEAR, -1)
                 expectedDate = formatter.format(calendar.time)
             } else break
         } while (cursor.moveToNext())
@@ -238,11 +286,12 @@ class HabitDatabaseHelper(context: Context) :
                 if (prevDate == null) {
                     currentStreak = 1
                 } else {
-                    val diffDays = ((d!!.time - prevDate.time) / (1000 * 60 * 60 * 24)).toInt()
+                    val diffDays =
+                        ((d!!.time - prevDate.time) / (1000 * 60 * 60 * 24)).toInt()
                     if (diffDays == 1) {
                         currentStreak++
                     } else {
-                        if (currentStreak > longestStreak) longestStreak = currentStreak
+                        longestStreak = maxOf(longestStreak, currentStreak)
                         currentStreak = 1
                     }
                 }
@@ -250,7 +299,8 @@ class HabitDatabaseHelper(context: Context) :
             } while (datesCursor.moveToNext())
         }
 
-        if (currentStreak > longestStreak) longestStreak = currentStreak
+        longestStreak = maxOf(longestStreak, currentStreak)
+
         datesCursor.close()
         db.close()
 
@@ -398,7 +448,7 @@ class HabitDatabaseHelper(context: Context) :
             null
         )
         cursor.moveToFirst()
-        val points = cursor.getInt(0) * 10
+        val points = cursor.getInt(0) * 10 // 10 points per completion
         cursor.close()
         db.close()
         return points
