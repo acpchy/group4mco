@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mobdeve.s16.group4mco.databinding.ActivityEditHabitBinding
 import java.util.*
 
+// Activity for editing an existing habit
 class EditHabitActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityEditHabitBinding
@@ -15,6 +16,7 @@ class EditHabitActivity : AppCompatActivity() {
     private var habitId: Int = -1
     private var selectedReminderTime: String? = null
 
+    // Predefined categories and frequencies for habits
     private val categories = listOf("Health", "Study", "Lifestyle")
     private val frequencies = listOf("Daily", "3x/week", "Weekdays", "Weekends")
 
@@ -25,14 +27,17 @@ class EditHabitActivity : AppCompatActivity() {
 
         habitDb = HabitDatabaseHelper(this)
 
+        // Set up the category spinner with predefined categories
         val categoryAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerCategory.adapter = categoryAdapter
 
+        // Set up the frequency spinner with predefined frequencies
         val frequencyAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, frequencies)
         frequencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerFrequency.adapter = frequencyAdapter
 
+        // Get habit ID from intent; if invalid, close activity
         habitId = intent.getIntExtra("habitId", -1)
         if (habitId == -1) {
             Toast.makeText(this, "Invalid habit ID", Toast.LENGTH_SHORT).show()
@@ -40,21 +45,26 @@ class EditHabitActivity : AppCompatActivity() {
             return
         }
 
+        // Load habit data from database and populate UI
         loadHabitData(habitId)
 
+        // Set up time picker button
         binding.btnPickTime.setOnClickListener {
             showTimePicker()
         }
 
+        // Save updated habit
         binding.btnSaveHabit.setOnClickListener {
             saveHabit()
         }
 
+        // Delete habit
         binding.btnDeleteHabit.setOnClickListener {
             deleteHabit()
         }
     }
 
+    // Load habit data from database into UI components
     private fun loadHabitData(id: Int) {
         val habit = habitDb.getAllHabits().find { it.id == id }
         if (habit == null) {
@@ -66,16 +76,20 @@ class EditHabitActivity : AppCompatActivity() {
         binding.etHabitName.setText(habit.name)
         binding.etDescription.setText(habit.description ?: "")
 
+        // Set the correct selection in category spinner
         val catIndex = categories.indexOf(habit.category)
         if (catIndex >= 0) binding.spinnerCategory.setSelection(catIndex)
 
+        // Set the correct selection in frequency spinner
         val freqIndex = frequencies.indexOf(habit.frequency)
         if (freqIndex >= 0) binding.spinnerFrequency.setSelection(freqIndex)
 
+        // Display the reminder time
         selectedReminderTime = habit.reminderTime
         binding.tvTimeSelected.text = selectedReminderTime ?: "No time selected"
     }
 
+    // Show a TimePicker dialog to select a reminder time
     private fun showTimePicker() {
         val calendar = Calendar.getInstance()
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
@@ -89,6 +103,7 @@ class EditHabitActivity : AppCompatActivity() {
         timePicker.show()
     }
 
+    // Save the updated habit to the database
     private fun saveHabit() {
         val name = binding.etHabitName.text.toString().trim()
         val description = binding.etDescription.text.toString().trim()
@@ -100,6 +115,7 @@ class EditHabitActivity : AppCompatActivity() {
             return
         }
 
+        // Create an updated habit object
         val updatedHabit = Habit(
             id = habitId,
             name = name,
@@ -109,6 +125,7 @@ class EditHabitActivity : AppCompatActivity() {
             reminderTime = selectedReminderTime ?: ""
         )
 
+        // Update habit in database and show result
         val rowsAffected = habitDb.updateHabit(updatedHabit)
         if (rowsAffected > 0) {
             Toast.makeText(this, "Habit updated successfully", Toast.LENGTH_SHORT).show()
@@ -118,6 +135,7 @@ class EditHabitActivity : AppCompatActivity() {
         }
     }
 
+    // Delete the habit from the database
     private fun deleteHabit() {
         val deleted = habitDb.deleteHabit(habitId)
         if (deleted > 0) {
